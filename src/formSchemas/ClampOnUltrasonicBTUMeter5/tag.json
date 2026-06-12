@@ -1,0 +1,20 @@
+{
+  "id": "C2.2.2-tag",
+  "fieldMeta": {
+    "pipeData": { "label": "Pipe Data", "placeholder": "e.g., 200 mm IRON SCH 40" },
+    "modulusAddress": {
+      "label": "Modbus Address",
+      "placeholder": "e.g., 55"
+    },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., BTU-01 URBANMYSTIC"
+    }
+  },
+  "sections": [
+    {
+      "title": "Additional Information needed for Tag",
+      "fields": ["pipeData"]
+    }
+  ]
+}

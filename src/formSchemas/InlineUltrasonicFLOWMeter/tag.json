@@ -1,0 +1,20 @@
+{
+  "id": "C1.1-tag",
+  "fieldMeta": {
+    "pipeData": { "label": "Pipe Data", "placeholder": "e.g., 150 mm CS SCH 40" },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., WM-01 TAWAM HOSPITAL"
+    },
+    "modulusAddress": {
+      "label": "Modbus Address",
+      "placeholder": "e.g., 56"
+    }
+  },
+  "sections": [
+    {
+      "title": "Additional Information needed for Tag",
+      "fields": ["pipeData"]
+    }
+  ]
+}

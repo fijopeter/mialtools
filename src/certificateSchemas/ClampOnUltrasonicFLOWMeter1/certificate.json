@@ -1,0 +1,54 @@
+{
+  "title": "FLOW METER",
+  "subtitle": "CERTIFICATE OF CALIBRATION",
+  "headerLine": "FLOW METER",
+  "columnOne": [
+    { "width": "30%", "textAlign": "left" },
+    { "title": "Configuration Data" },
+    { "field": "fluid" },
+    { "field": "accuracy" },
+    { "field": "pipeSize" },
+    { "field": "transducerType" },
+    { "field": "transducerTempRange" },
+    { "field": "transducerCableLength" },
+    { "field": "powerSupply" },
+    { "field": "analogRange" },
+    { "field": "applicationType" }
+  ],
+  "columnTwo": [
+    { "width": "30%", "textAlign": "left" },
+    { "blank": "blank" },    
+    { "blank": "blank" },
+    { "field": "protection" },
+    { "field": "pipeType" },
+    { "field": "flowRateRange" },
+    { "field": "pipeOD" },
+    { "field": "wallThickness" },
+    { "field": "transducerMountingMethod" },
+    { "field": "separationDistance" },
+    { "field": "customerKFactor" }
+  ],
+  "columnThree": [
+    { "width": "30%", "textAlign": "left" },
+    { "title": "Flow Meter Information" },
+    { "field": "model" },
+    { "field": "serialNo" },
+    { "field": "measuringTechnology" },
+    { "field": "meterTag" },
+    {
+      "communicationBlock": true,
+      "fields": ["communicationInterface", "address", "baudRate", "parity"]
+    },
+    { "blank": "blank" },    
+    { "blank": "blank" },    
+    { "title": "Engineering Units" },
+    { 
+      "field1": "flowRateUnit",
+      "field2": "flowTotalUnit",
+      "field1Width": 150,
+      "field2Width": 200,
+      "gap": 4 
+    }
+  ],
+  "footerText": "MIAL INSTRUMENTS PVT. LTD. certifies that this Flow meter was calibrated against a primary standards accurate to within ±0.2%."
+}

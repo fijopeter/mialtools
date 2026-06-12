@@ -1,0 +1,14 @@
+{
+  "id": "A2-tag",
+  "fieldMeta": {
+    "meterTag": { "label": "Meter Tag", "placeholder": "Enter meter tag" },
+    "outputs": { "label": "Outputs", "placeholder": "e.g., 4-20mA + MODBUS" },
+    "modulusAddress": { "label": "Modbus Address", "placeholder": "eg., 01", "defaultValue": "01" }
+  },
+  "sections": [
+    {
+      "title": "Additional Information needed for Tag",
+      "fields": ["meterTag", "outputs", "modulusAddress"]
+    }
+  ]
+}

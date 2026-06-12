@@ -1,0 +1,25 @@
+{
+  "id": "B1-tag",
+  "fieldMeta": {
+    "pipeData": {
+      "label": "Pipe Data",
+      "placeholder": "e.g., 150 mm UPVC SCH 40"
+    },
+    "modulusAddress": { "label": "Modbus Address", "placeholder": "eg., 01", "defaultValue": "01" },
+    "communicationInterface": {
+      "label": "Communication Interface",
+      "placeholder": "e.g., Modbus RS-485",
+      "defaultValue": "Modbus RS-485"
+    },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., BTU-01 (UMM AL QUWAIN SPECIALIST DENTAL CENTER)"
+    }
+  },
+  "sections": [
+    {
+      "title": "Additional Information needed for Tag",
+      "fields": ["pipeData"]
+    }
+  ]
+}

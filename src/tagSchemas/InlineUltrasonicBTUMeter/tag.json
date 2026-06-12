@@ -1,0 +1,15 @@
+{
+  "tagDraw": {
+    "type": "btu",
+    "fields": [
+      { "label": "MODEL", "key": "model", "offsetX": 140 },
+      { "label": "SERIAL No.", "key": "serialNo" },
+      { "label": "FLOW TUBE S/N", "key": "flowTubeSerialNo", "offsetX": 140 },
+      { "label": "PIPE DATA", "key": "pipeData" },
+      { "label": "COMMUNICATION INTERFACE", "key": "communicationInterface", "offsetX": 140 },
+      { "label": "BAUD RATE", "key": "baudRate" },
+      { "label": "MODBUS ADDRESS", "key": "address", "offsetX": 140 }
+    ],
+    "headerKey": "meterTag"
+  }
+}

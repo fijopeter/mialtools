@@ -1,0 +1,16 @@
+{
+  "tagDraw": {
+    "type": "flow",
+    "fields": [
+      { "label": "MODEL", "key": "model", "offsetX": 140 },
+      { "label": "SERIAL No.", "key": "serialNo" },
+      { "label": "PIPE DATA", "key": "pipeData", "offsetX": 140 },
+      { "label": "ANALOG OUTPUTS", "key": "analogOutputs", "fallbackKey": "analogOutput" },
+      { "label": "COMMUNICATION INTERFACE", "key": "communicationInterface", "offsetX": 140 },
+      { "label": "BAUD RATE", "key": "baudRate" },
+      { "label": "MODBUS ADDRESS", "key": "address", "offsetX": 140 },
+      { "label": "ANALOG RANGE", "key": "analogRange" }
+    ],
+    "headerKey": "meterTag"
+  }
+}

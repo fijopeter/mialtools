@@ -1,0 +1,107 @@
+{
+  "id": "A1",
+  "label": "Ultra Sonic Level Meter",
+  "certificateType": "level",
+  "fieldMeta": {
+    "applicationFluid": { "label": "Application-Fluid", "placeholder": "e.g., Diesel", "defaultValue": "Diesel" },
+    "accuracy": {
+      "label": "Accuracy",
+      "placeholder": "e.g., ±0.5% FS",
+      "dropdown": true,
+      "options": ["±0.5% FS", "±1% FS"],
+      "defaultValue": "±0.5% FS"
+    },
+    "transmitterUnitProtection": {
+      "label": "Transmitter Protection",
+      "placeholder": "e.g., IP65",
+      "dropdown": true,
+      "options": ["IP65", "IP67", "IP68"],
+      "defaultValue": "IP65"
+    },
+    "sensorProtection": {
+      "label": "Sensor Protection",
+      "placeholder": "e.g., IP65",
+      "dropdown": true,
+      "options": ["IP65", "IP67", "IP68"],
+      "defaultValue": "IP65"
+    },
+    "Explosion Proof / ABS": {
+      "label": "Explosion Proof / ABS",
+      "placeholder": "e.g., ABS",
+      "dropdown": true,
+      "options": ["ABS"],
+      "defaultValue": "ABS"
+    },
+    "measuringRange": { "label": "Measuring Range", "placeholder": "e.g., 0 - 4 m", "defaultValue": "0 - 4 m" },
+    "setRange": { "label": "Set Range", "placeholder": "e.g., 4 m", "defaultValue": "4 m" },
+    "blindSpot": { "label": "Blind Spot", "placeholder": "e.g., 0.4 m", "defaultValue": "0.4 m" },
+    "displayType": {
+      "label": "Display Type",
+      "placeholder": "e.g., Integral",
+      "dropdown": true,
+      "options": ["Integral", "Remote", "Sensor without Display"],
+      "defaultValue": "Integral"
+    },
+    "analogOutput": { "label": "Analog Output", "placeholder": "e.g., 4-20 mA", "defaultValue": "4 - 20 mA" },
+    "temperature": {
+      "label": "Temperature",
+      "placeholder": "e.g., Transmitter -20 to 60 C",
+      "defaultValue": "Transmitter - 20°C to 60° C & Probe - 20°C to 80° C"
+    },
+    "powerSupply": { "label": "Power Supply", "placeholder": "e.g., 24 VDC", "defaultValue": "24 VDC" },
+    "communicationProtocol": {
+      "label": "Communication Interface Protocol",
+      "placeholder": "e.g., Modbus RS 485",
+      "defaultValue": "Modbus RS 485"
+    },
+    "address": { "label": "Address", "placeholder": "e.g., 01", "defaultValue": "01" },
+    "baudRate": { "label": "Baud Rate", "placeholder": "e.g., 9600", "defaultValue": "9600" },
+    "parity": { "label": "Parity", "placeholder": "e.g., None", "defaultValue": "None" },
+    "model": { "label": "Model", "placeholder": "e.g., MULR", "defaultValue": "MULR" },
+    "serialNo": { "label": "Serial No", "placeholder": "e.g., MUL0302260007", "defaultValue": "MUL0302260007" },
+    "measuringTechnology": {
+      "label": "Measuring Technology",
+      "placeholder": "e.g., Ultrasonic",
+      "defaultValue": "Ultrasonic"
+    },
+    "calibratedBy": {
+      "label": "Calibrated By",
+      "placeholder": "Enter technician name",
+      "dropdown": true,
+      "options": ["Jerin Zacharia", "JERIN ZACHARIA"],
+      "defaultValue": "JERIN ZACHARIA"
+    },
+    "date": { "label": "Date", "inputType": "date" }
+  },
+  "sections": [
+    {
+      "title": "CONFIGURATION DATA",
+      "fields": [
+        "applicationFluid",
+        "accuracy",
+        "transmitterUnitProtection",
+        "sensorProtection",
+        "Explosion Proof / ABS",
+        "measuringRange",
+        "setRange",
+        "blindSpot",
+        "displayType",
+        "analogOutput",
+        "temperature",
+        "powerSupply",
+        "communicationProtocol",
+        "address",
+        "baudRate",
+        "parity"
+      ]
+    },
+    {
+      "title": "LEVEL METER INFORMATION",
+      "fields": ["model", "serialNo", "measuringTechnology"]
+    },
+    {
+      "title": "CALIBRATION SIGN-OFF",
+      "fields": ["calibratedBy", "date"]
+    }
+  ]
+}

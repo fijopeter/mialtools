@@ -1,0 +1,21 @@
+{
+  "id": "B2-tag",
+  "fieldMeta": {
+    "pipeData": {
+      "label": "Pipe Data",
+      "placeholder": "e.g., 150 mm CS SCH 40",
+      "defaultValue": "150 mm CS SCH 40"
+    },
+    "modulusAddress": { "label": "Modbus Address", "placeholder": "eg., 01", "defaultValue": "01" },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., FM-01 JOHNSON CONTROLS"
+    }
+  },
+  "sections": [
+    {
+      "title": "Additional Information needed for Tag",
+      "fields": ["pipeData"]
+    }
+  ]
+}

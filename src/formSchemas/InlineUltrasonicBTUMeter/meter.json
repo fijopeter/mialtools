@@ -1,0 +1,224 @@
+{
+  "id": "C1.2",
+  "label": "Inline Ultrasonic BTU Meter",
+  "certificateType": "ultrasonic-btu",
+  "fieldMeta": {
+    "fluid": {
+      "label": "Fluid",
+      "placeholder": "e.g., Water",
+      "defaultValue": "Water"
+    },
+    "accuracy": {
+      "label": "Accuracy",
+      "placeholder": "e.g., ± 1%",
+      "defaultValue": "± 1%"
+    },
+    "pipeSize": {
+      "label": "Pipe Size",
+      "placeholder": "e.g., DN 50",
+      "defaultValue": "DN 50"
+    },
+    "pipeSchedule": {
+      "label": "Pipe Schedule",
+      "placeholder": "e.g., SCH 40",
+      "defaultValue": "SCH 40"
+    },
+    "flowtubeTempRange": {
+      "label": "Flowtube Temperature Range",
+      "placeholder": "e.g., -15 °C to +80 °C",
+      "defaultValue": "-15 °C to +80 °C"
+    },
+    "temperatureSensor": {
+      "label": "Temperature Sensor",
+      "placeholder": "e.g., Immersion Type – PT1000",
+      "defaultValue": "Immersion Type – PT1000"
+    },
+    "temperatureSensorRange": {
+      "label": "Temperature Sensor Range",
+      "placeholder": "e.g., -30 °C to +200 °C",
+      "defaultValue": "-30 °C to +200 °C"
+    },
+    "flangeType": {
+      "label": "Flange Type",
+      "placeholder": "e.g., ANSI CLASS 150",
+      "defaultValue": "ANSI CLASS 150"
+    },
+    "transducerCableLength": {
+      "label": "Transducer Cable Length",
+      "placeholder": "e.g., 10 m",
+      "defaultValue": "10 m"
+    },
+    "powerSupply": {
+      "label": "Power Supply",
+      "placeholder": "e.g., 24 VDC",
+      "defaultValue": "24 VDC"
+    },
+    "applicationType": {
+      "label": "Application Type",
+      "placeholder": "e.g., Glycol"
+    },
+    "protection": {
+      "label": "Protection",
+      "placeholder": "e.g., IP68",
+      "defaultValue": "IP68"
+    },
+    "pipeType": {
+      "label": "Pipe Type",
+      "placeholder": "e.g., STEEL",
+      "defaultValue": "STEEL"
+    },
+    "flowRateRange": {
+      "label": "Flow Rate Range",
+      "placeholder": "e.g., ±0.03 m/s ~ ±5 m/s",
+      "defaultValue": "±0.03 m/s ~ ±5 m/s"
+    },
+    "measuringTube": {
+      "label": "Measuring Tube",
+      "placeholder": "e.g., 304SS",
+      "defaultValue": "304SS"
+    },
+    "analogOutput": {
+      "label": "Analog Output",
+      "placeholder": "e.g., 4–20 mA",
+      "defaultValue": "4–20 mA"
+    },
+    "analogRange": {
+      "label": "Analog Range",
+      "placeholder": "e.g., 0 – 10 L/s"
+    },
+    "customerKFactor": {
+      "label": "Customer K Factor",
+      "placeholder": "e.g., 1.119"
+    },
+    "model": {
+      "label": "Model",
+      "placeholder": "e.g., INLINE MUF (B) 1200"
+    },
+    "serialNo": {
+      "label": "Serial No.",
+      "placeholder": "e.g., F2006383"
+    },
+    "flowTubeSerialNo": {
+      "label": "Flow Tube Serial No.",
+      "placeholder": "e.g., M1203240002"
+    },
+    "measuringTechnology": {
+      "label": "Measuring Technology",
+      "placeholder": "e.g., Transit Time Ultrasonic",
+      "defaultValue": "Transit Time Ultrasonic"
+    },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., BTU-01 ADEAREST"
+    },
+    "communicationInterface": {
+      "label": "Communication Interface",
+      "placeholder": "e.g., Modbus RS-485",
+      "defaultValue": "Modbus RS-485"
+    },
+    "address": {
+      "label": "Address",
+      "placeholder": "e.g., 55"
+    },
+    "baudRate": {
+      "label": "Baud Rate",
+      "placeholder": "e.g., 9600",
+      "defaultValue": "9600"
+    },
+    "parity": {
+      "label": "Parity",
+      "placeholder": "e.g., None",
+      "defaultValue": "None"
+    },
+    "energyRateUnit": {
+      "label": "Energy Rate Unit",
+      "placeholder": "e.g., kW",
+      "defaultValue": "kW"
+    },
+    "energyTotalUnit": {
+      "label": "Energy Total Unit",
+      "placeholder": "e.g., kWh",
+      "defaultValue": "kWh"
+    },
+    "flowRateUnit": {
+      "label": "Flow Rate Unit",
+      "placeholder": "e.g., L/s",
+      "defaultValue": "L/s"
+    },
+    "flowTotalUnit": {
+      "label": "Flow Total Unit",
+      "placeholder": "e.g., Litres",
+      "defaultValue": "Litres"
+    },
+    "temperatureUnit": {
+      "label": "Temperature Unit",
+      "placeholder": "e.g., °C",
+      "defaultValue": "°C"
+    },
+    "calibratedBy": {
+      "label": "Calibrated By",
+      "placeholder": "Enter technician name",
+      "defaultValue": "JERIN ZACHARIA"
+    },
+    "date": {
+      "label": "Calibration Date",
+      "inputType": "date"
+    }
+  },
+  "sections": [
+    {
+      "title": "CONFIGURATION DATA",
+      "fields": [
+        "fluid",
+        "accuracy",
+        "pipeSize",
+        "pipeSchedule",
+        "flowtubeTempRange",
+        "temperatureSensor",
+        "temperatureSensorRange",
+        "flangeType",
+        "transducerCableLength",
+        "powerSupply",
+        "applicationType",
+        "protection",
+        "pipeType",
+        "flowRateRange",
+        "measuringTube",
+        "analogOutput",
+        "analogRange",
+        "customerKFactor"
+      ]
+    },
+    {
+      "title": "BTU METER INFORMATION",
+      "fields": [
+        "model",
+        "serialNo",
+        "flowTubeSerialNo",
+        "measuringTechnology",
+        "meterTag",
+        "communicationInterface",
+        "address",
+        "baudRate",
+        "parity"
+      ]
+    },
+    {
+      "title": "ENGINEERING UNITS",
+      "fields": [
+        "energyRateUnit",
+        "energyTotalUnit",
+        "flowRateUnit",
+        "flowTotalUnit",
+        "temperatureUnit"
+      ]
+    },
+    {
+      "title": "CALIBRATION",
+      "fields": [
+        "calibratedBy",
+        "date"
+      ]
+    }
+  ]
+}

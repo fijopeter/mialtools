@@ -1,0 +1,16 @@
+{
+  "tagDraw": {
+    "type": "electromagnetic",
+    "fields": [
+      { "label": "MODEL", "key": "model" },
+      { "label": "S/N", "key": "serialNo", "offsetX": 140 },
+      { "label": "PIPE DATA", "key": "pipeData" },
+      { "label": "ANALOG OUTPUTS", "key": "analogOutput", "fallbackKey": "analogOutput" },
+      { "label": "COMMUNICATION INTERFACE", "key": "communicationInterface", "fallbackKey": "communicationInterface" },
+      { "label": "BAUD RATE", "key": "baudRate" },
+      { "label": "MODBUS ADDRESS", "key": "modulusAddress", "fallbackKey": "address" },
+      { "label": "ANALOG RANGE", "key": "analogRange" }
+    ],
+    "headerKey": "meterTag"
+  }
+}

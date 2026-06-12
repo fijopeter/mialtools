@@ -1,0 +1,40 @@
+{
+  "title": "LEVEL METER",
+  "subtitle": "CERTIFICATE OF CALIBRATION",
+  "headerLine": "LEVEL METER",
+  "columnOne": [
+    { "width": "10%", "textAlign": "middle" },
+    { "blank": "blank" },    
+    { "blank": "blank" }
+
+  ],
+  "columnTwo": [
+    { "width": "30%", "textAlign": "middle" },
+    { "title": "Configuration Data" },
+    { "field": "applicationFluid" },
+    { "field": "accuracy" },
+    { "field": "transmitterUnitProtection" },
+    { "field": "sensorProtection" },
+    { "field": "Explosion Proof / ABS" },
+    { "field": "measuringRange" },
+    { "field": "setRange" },
+    { "field": "blindSpot" },
+    { "field": "displayType" },
+    { "field": "analogOutput" }
+  ],
+  "columnThree": [
+    { "width": "40%", "textAlign": "middle" },
+    { "field": "temperature" },
+    { "field": "powerSupply" },
+    {
+      "communicationBlock": true,
+      "fields": ["communicationProtocol", "address", "baudRate", "parity"]
+    },
+    { "blank": "blank" },    
+    { "title": "Meter Specifications" },
+    { "field": "model" },
+    { "field": "serialNo" },
+    { "field": "measuringTechnology" }
+  ],
+  "footerText": "MIAL INSTRUMENTS PVT. LTD. certifies that this Level meter was calibrated against a primary standards accurate to within ±0.2%."
+}

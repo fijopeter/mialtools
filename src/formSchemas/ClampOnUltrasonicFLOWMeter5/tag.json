@@ -1,0 +1,20 @@
+{
+  "id": "C2.1.1-tag",
+  "fieldMeta": {
+    "pipeData": { "label": "Pipe Data", "placeholder": "e.g., 32 mm PPR" },
+    "modulusAddress": {
+      "label": "Modbus Address",
+      "placeholder": "e.g., 69"
+    },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., UWM-03"
+    }
+  },
+  "sections": [
+    {
+      "title": "Additional Information needed for Tag",
+      "fields": ["pipeData"]
+    }
+  ]
+}

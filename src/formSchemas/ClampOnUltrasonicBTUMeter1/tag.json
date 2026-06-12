@@ -1,0 +1,12 @@
+{
+  "id": "C2.2.1-tag",
+  "fieldMeta": {
+    "pipeData": { "label": "Pipe Data", "placeholder": "e.g., 200 mm IRON SCH 40" }
+  },
+  "sections": [
+    {
+      "title": "Additional Information needed for Tag",
+      "fields": ["pipeData"]
+    }
+  ]
+}

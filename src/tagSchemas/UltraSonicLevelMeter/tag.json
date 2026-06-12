@@ -1,0 +1,14 @@
+{
+  "tagDraw": {
+    "type": "level",
+    "fields": [
+      { "label": "MODEL", "key": "model" },
+      { "label": "S/N", "key": "serialNo", "offsetX": 140 },
+      { "label": "MEASURING RANGE", "key": "measuringRange" },
+      { "label": "OUTPUTS", "key": "outputs", "fallbackKey": "analogOutput" },
+      { "label": "BAUD RATE", "key": "baudRate" },
+      { "label": "MODBUS ADDRESS", "key": "modulusAddress", "fallbackKey": "address" }
+    ],
+    "headerKey": "meterTag"
+  }
+}

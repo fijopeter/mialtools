@@ -1,0 +1,221 @@
+{
+  "id": "C2.2.1",
+  "label": "Clamp On Ultrasonic BTU Meter (±0.1%)",
+  "certificateType": "ultrasonic-clamp-btu",
+  "fieldMeta": {
+    "fluid": {
+      "label": "Fluid",
+      "placeholder": "e.g., Water",
+      "defaultValue": "Water"
+    },
+    "accuracy": {
+      "label": "Accuracy",
+      "placeholder": "e.g., ± 1%",
+      "defaultValue": "± 1%",
+      "disabled": true
+    },
+    "pipeSize": {
+      "label": "Pipe Size",
+      "placeholder": "e.g., DN 200"
+    },
+    "pipeSchedule": {
+      "label": "Pipe Schedule",
+      "placeholder": "e.g., SCH 40"
+    },
+    "temperatureSensor": {
+      "label": "Temperature Sensor",
+      "placeholder": "e.g., Clamp-On PT 1000",
+      "defaultValue": "Clamp-On PT 1000"
+    },
+    "temperatureSensorRange": {
+      "label": "Temperature Sensor Range",
+      "placeholder": "e.g., -20 °C to +80 °C",
+      "defaultValue": "-20 °C to +80 °C"
+    },
+    "transducerType": {
+      "label": "Transducer Type",
+      "placeholder": "e.g., CD01",
+      "defaultValue": "CD01"
+    },
+    "transducerTempRange": {
+      "label": "Transducer Temperature Range",
+      "placeholder": "e.g., -15 °C to +60 °C",
+      "defaultValue": "-15 °C to +60 °C"
+    },
+    "transducerCableLength": {
+      "label": "Transducer Cable Length",
+      "placeholder": "e.g., 9 m",
+      "defaultValue": "9 m"
+    },
+    "powerSupply": {
+      "label": "Power Supply",
+      "placeholder": "e.g., 24 VDC",
+      "defaultValue": "24 VDC",
+      "disabled": true
+    },
+    "applicationType": {
+      "label": "Application Type",
+      "placeholder": "e.g., Chilled Water"
+    },
+    "protection": {
+      "label": "Protection",
+      "placeholder": "e.g., IP65",
+      "defaultValue": "IP65"
+    },
+    "pipeType": {
+      "label": "Pipe Type",
+      "placeholder": "e.g., IRON"
+    },
+    "flowRateRange": {
+      "label": "Flow Rate Range",
+      "placeholder": "e.g., ±0.03 m/s ~ ±5 m/s",
+      "defaultValue": "±0.03 m/s ~ ±5 m/s"
+    },
+    "pipeOD": {
+      "label": "Pipe O.D.",
+      "placeholder": "e.g., 219.1 mm"
+    },
+    "wallThickness": {
+      "label": "Wall Thickness",
+      "placeholder": "e.g., 8 mm"
+    },
+    "transducerMountingMethod": {
+      "label": "Transducer Mounting Method",
+      "placeholder": "e.g., Z"
+    },
+    "separationDistance": {
+      "label": "Separation Distance",
+      "placeholder": "e.g., 57.4 mm"
+    },
+    "customerKFactor": {
+      "label": "Customer K Factor",
+      "placeholder": "e.g., 1.022"
+    },
+    "analogRange": {
+      "label": "Analog Range",
+      "placeholder": "e.g., 0 – 120 L/s"
+    },
+    "model": {
+      "label": "Model",
+      "placeholder": "e.g., MUF (B) 1200"
+    },
+    "serialNo": {
+      "label": "Serial No.",
+      "placeholder": "e.g., F2008801"
+    },
+    "measuringTechnology": {
+      "label": "Measuring Technology",
+      "placeholder": "e.g., Transit Time Ultrasonic",
+      "defaultValue": "Transit Time Ultrasonic"
+    },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., BTU-01 EGIS"
+    },
+    "communicationInterface": {
+      "label": "Communication Interface",
+      "placeholder": "e.g., Modbus RS-485",
+      "defaultValue": "Modbus RS-485"
+    },
+    "address": {
+      "label": "Address",
+      "placeholder": "e.g., 55"
+    },
+    "baudRate": {
+      "label": "Baud Rate",
+      "placeholder": "e.g., 9600",
+      "defaultValue": "9600"
+    },
+    "parity": {
+      "label": "Parity",
+      "placeholder": "e.g., None",
+      "defaultValue": "None"
+    },
+    "energyRateUnit": {
+      "label": "Energy Rate Unit",
+      "placeholder": "e.g., Ton"
+    },
+    "energyTotalUnit": {
+      "label": "Energy Total Unit",
+      "placeholder": "e.g., Ton.h × 10"
+    },
+    "flowRateUnit": {
+      "label": "Flow Rate Unit",
+      "placeholder": "e.g., L/s"
+    },
+    "flowTotalUnit": {
+      "label": "Flow Total Unit",
+      "placeholder": "e.g., Litres × 10"
+    },
+    "temperatureUnit": {
+      "label": "Temperature Unit",
+      "placeholder": "e.g., °C"
+    },
+    "calibratedBy": {
+      "label": "Calibrated By",
+      "placeholder": "Enter technician name",
+      "defaultValue": "JERIN ZACHARIA"
+    },
+    "date": {
+      "label": "Calibration Date",
+      "inputType": "date"
+    }
+  },
+  "sections": [
+    {
+      "title": "CONFIGURATION DATA",
+      "fields": [
+        "fluid",
+        "accuracy",
+        "pipeSize",
+        "pipeSchedule",
+        "temperatureSensor",
+        "temperatureSensorRange",
+        "transducerType",
+        "transducerTempRange",
+        "transducerCableLength",
+        "powerSupply",
+        "applicationType",
+        "protection",
+        "pipeType",
+        "flowRateRange",
+        "pipeOD",
+        "wallThickness",
+        "transducerMountingMethod",
+        "separationDistance",
+        "customerKFactor",
+        "analogRange"
+      ]
+    },
+    {
+      "title": "BTU METER INFORMATION",
+      "fields": [
+        "model",
+        "serialNo",
+        "measuringTechnology",
+        "meterTag",
+        "communicationInterface",
+        "address",
+        "baudRate",
+        "parity"
+      ]
+    },
+    {
+      "title": "ENGINEERING UNITS",
+      "fields": [
+        "energyRateUnit",
+        "energyTotalUnit",
+        "flowRateUnit",
+        "flowTotalUnit",
+        "temperatureUnit"
+      ]
+    },
+    {
+      "title": "CALIBRATION",
+      "fields": [
+        "calibratedBy",
+        "date"
+      ]
+    }
+  ]
+}

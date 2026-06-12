@@ -1,0 +1,73 @@
+[
+    {
+        "id" : "UltraSonicLevelMeter",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "measuringRange", "outputs", "baudRate", "modulusAddress", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "RadarLevelMeter",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "measuringRange", "outputs", "baudRate", "modulusAddress", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "ElectromagneticBTUMeter",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "pipeData", "analogOutput", "communicationInterface", "baudRate", "modulusAddress", "analogRange", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "ElectromagneticFLOWMeter",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "pipeData", "analogOutput", "communicationInterface", "baudRate", "modulusAddress", "analogRange", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "InlineUltrasonicFLOWMeter",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "flowTubeSerialNo", "pipeData", "communicationInterface", "baudRate", "modulusAddress", "analogRange", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "InlineUltrasonicBTUMeter",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "flowTubeSerialNo", "pipeData", "communicationInterface", "baudRate", "modulusAddress", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "ClampOnUltrasonicFLOW5",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "pipeData", "analogOutputs", "communicationInterface", "baudRate", "modulusAddress", "analogRange", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "ClampOnUltrasonicFLOW1",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "pipeData", "analogOutputs", "communicationInterface", "baudRate", "modulusAddress", "analogRange", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "ClampOnUltrasonicBTU1",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+            "meterTag", "model", "serialNo", "pipeData", "communicationInterface", "baudRate", "address", "calibratedBy", "date"
+        ]
+    },
+    {
+        "id" : "ClampOnUltrasonicBTU5",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "pipeData", "communicationInterface", "baudRate", "modulusAddress", "calibratedBy", "date"
+        ]
+    }
+
+]

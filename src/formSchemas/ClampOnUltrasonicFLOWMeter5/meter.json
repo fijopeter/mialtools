@@ -1,0 +1,192 @@
+{
+  "id": "C2.1.1",
+  "label": "Clamp On Ultrasonic FLOW Meter (±0.5%)",
+  "certificateType": "ultrasonic-clamp-flow",
+  "fieldMeta": {
+    "fluid": {
+      "label": "Fluid",
+      "placeholder": "e.g., Water",
+      "defaultValue": "Water"
+    },
+    "accuracy": {
+      "label": "Accuracy",
+      "placeholder": "e.g., ± 0.5%",
+      "defaultValue": "± 0.5%",
+      "disabled": true
+    },
+    "pipeSize": {
+      "label": "Pipe Size",
+      "placeholder": "e.g., DN 32",
+      "defaultValue": "DN 32"
+    },
+    "transducerType": {
+      "label": "Transducer Type",
+      "placeholder": "e.g., C1",
+      "defaultValue": "C1",
+      "disabled": true
+    },
+    "transducerTempRange": {
+      "label": "Transducer Temperature Range",
+      "placeholder": "e.g., -15 °C to +80 °C",
+      "defaultValue": "-15 °C to +80 °C"
+    },
+    "transducerCableLength": {
+      "label": "Transducer Cable Length",
+      "placeholder": "e.g., 9 m",
+      "defaultValue": "9 m"
+    },
+    "powerSupply": {
+      "label": "Power Supply",
+      "placeholder": "e.g., 24 VDC",
+      "defaultValue": "24 VDC",
+      "disabled": true
+    },
+    "analogRange": {
+      "label": "Analog Range",
+      "placeholder": "e.g., 0 – 3 L/s",
+      "defaultValue": "0 – 3 L/s"
+    },
+    "applicationType": {
+      "label": "Application Type",
+      "placeholder": "e.g., Domestic Cold Water"
+    },
+    "protection": {
+      "label": "Protection",
+      "placeholder": "e.g., IP65",
+      "defaultValue": "IP65"
+    },
+    "pipeType": {
+      "label": "Pipe Type",
+      "placeholder": "e.g., PPR"
+    },
+    "flowRateRange": {
+      "label": "Flow Rate Range",
+      "placeholder": "e.g., ±0.03 m/s ~ ±12 m/s",
+      "defaultValue": "±0.03 m/s ~ ±12 m/s"
+    },
+    "pipeOD": {
+      "label": "Pipe O.D.",
+      "placeholder": "e.g., 32 mm"
+    },
+    "wallThickness": {
+      "label": "Wall Thickness",
+      "placeholder": "e.g., 3.6 mm"
+    },
+    "transducerMountingMethod": {
+      "label": "Transducer Mounting Method",
+      "placeholder": "e.g., V"
+    },
+    "separationDistance": {
+      "label": "Separation Distance",
+      "placeholder": "e.g., 0.7 mm"
+    },
+    "customerKFactor": {
+      "label": "Customer K Factor",
+      "placeholder": "e.g., 1.044"
+    },
+    "model": {
+      "label": "Model",
+      "placeholder": "e.g., MUF 1200"
+    },
+    "serialNo": {
+      "label": "Serial No.",
+      "placeholder": "e.g., F1000462"
+    },
+    "measuringTechnology": {
+      "label": "Measuring Technology",
+      "placeholder": "e.g., Transit Time Ultrasonic",
+      "defaultValue": "Transit Time Ultrasonic"
+    },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., UWM-03"
+    },
+    "communicationInterface": {
+      "label": "Communication Interface",
+      "placeholder": "e.g., Modbus RS-485",
+      "defaultValue": "Modbus RS-485"
+    },
+    "address": {
+      "label": "Address",
+      "placeholder": "e.g., 69"
+    },
+    "baudRate": {
+      "label": "Baud Rate",
+      "placeholder": "e.g., 9600",
+      "defaultValue": "9600"
+    },
+    "parity": {
+      "label": "Parity",
+      "placeholder": "e.g., None",
+      "defaultValue": "None"
+    },
+    "flowRateUnit": {
+      "label": "Flow Rate Unit",
+      "placeholder": "e.g., L/s"
+    },
+    "flowTotalUnit": {
+      "label": "Flow Total Unit",
+      "placeholder": "e.g., Litres"
+    },
+    "calibratedBy": {
+      "label": "Calibrated By",
+      "placeholder": "Enter technician name",
+      "defaultValue": "JERIN ZACHARIA"
+    },
+    "date": {
+      "label": "Calibration Date",
+      "inputType": "date"
+    }
+  },
+  "sections": [
+    {
+      "title": "CONFIGURATION DATA",
+      "fields": [
+        "fluid",
+        "accuracy",
+        "pipeSize",
+        "transducerType",
+        "transducerTempRange",
+        "transducerCableLength",
+        "powerSupply",
+        "analogRange",
+        "applicationType",
+        "protection",
+        "pipeType",
+        "flowRateRange",
+        "pipeOD",
+        "wallThickness",
+        "transducerMountingMethod",
+        "separationDistance",
+        "customerKFactor"
+      ]
+    },
+    {
+      "title": "FLOW METER INFORMATION",
+      "fields": [
+        "model",
+        "serialNo",
+        "measuringTechnology",
+        "meterTag",
+        "communicationInterface",
+        "address",
+        "baudRate",
+        "parity"
+      ]
+    },
+    {
+      "title": "ENGINEERING UNITS",
+      "fields": [
+        "flowRateUnit",
+        "flowTotalUnit"
+      ]
+    },
+    {
+      "title": "CALIBRATION",
+      "fields": [
+        "calibratedBy",
+        "date"
+      ]
+    }
+  ]
+}

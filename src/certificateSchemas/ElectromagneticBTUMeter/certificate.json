@@ -1,0 +1,64 @@
+{
+  "title": "BTU METER",
+  "subtitle": "CERTIFICATE OF CALIBRATION",
+  "headerLine": "BTU METER",
+  "columnOne": [
+    { "width": "35%", "textAlign": "left" },
+    { "title": "Configuration Data" },
+    { "field": "fluid" },
+    { "field": "accuracy" },
+    { "field": "pipeSize" },
+    { "field": "pipeSchedule" },
+    { "field": "nominalPressure" },
+    { "field": "electrode" },
+    { "field": "temperatureSensor" },
+    { "field": "temperatureSensorRange" },
+    { "field": "powerSupply" },
+    { "field": "analogOutput" }
+  ],
+  "columnTwo": [
+    { "width": "35%", "textAlign": "left" },
+    { "blank": "blank" },
+    { "blank": "blank" },
+    { "field": "applicationType" },
+    { "field": "protection" },
+    { "field": "pipeType" },
+    { "field": "linerMaterial" },
+    { "field": "measuringTube" },
+    { "field": "flowTubeTemperature" },
+    { "field": "flangeType" },
+    { "field": "customerKFactor" },
+    { "field": "analogRange" },
+    { "blank": "blank" }
+  ],
+  "columnThree": [
+    { "width": "35%", "textAlign": "left" },
+    { "title": "BTU Meter Information" },
+    { "field": "model" },
+    { "field": "serialNo" },
+    { "field": "measuringTechnology" },
+    { "field": "meterTag" },
+    {
+      "communicationBlock": true,
+      "fields": ["communicationInterface", "address", "baudRate", "parity"]
+    },
+    { "blank": "blank" },
+    { "title": "Engineering Units" },
+    { 
+      "field1": "energyRateUnit",
+      "field2": "energyTotalUnit",
+      "field1Width": 150,
+      "field2Width": 200,
+      "gap": 4
+    },
+    { 
+      "field1": "flowRateUnit",
+      "field2": "flowTotalUnit",
+      "field1Width": 150,
+      "field2Width": 200,
+      "gap": 4
+    },
+    { "field": "temperatureUnit" }
+  ],
+  "footerText": "MIAL INSTRUMENTS PVT. LTD. certifies that this BTU meter was calibrated against a primary standards accurate to within ±0.2%."
+}

@@ -1,0 +1,193 @@
+{
+  "id": "C1.1",
+  "label": "Inline Ultrasonic FLOW Meter",
+  "certificateType": "ultrasonic-flow",
+  "fieldMeta": {
+    "fluid": {
+      "label": "Fluid",
+      "placeholder": "e.g., Water",
+      "defaultValue": "Water"
+    },
+    "accuracy": {
+      "label": "Accuracy",
+      "placeholder": "e.g., ± 1%",
+      "defaultValue": "± 1%",
+      "disabled": true
+    },
+    "pipeSize": {
+      "label": "Pipe Size",
+      "placeholder": "e.g., DN 150",
+      "defaultValue": "DN 150"
+    },
+    "pipeSchedule": {
+      "label": "Pipe Schedule",
+      "placeholder": "e.g., SCH 40",
+      "defaultValue": "SCH 40"
+    },
+    "flowtubeTempRange": {
+      "label": "Flowtube Temperature Range",
+      "placeholder": "e.g., -15 °C to +80 °C",
+      "defaultValue": "-15 °C to +80 °C"
+    },
+    "transducerCableLength": {
+      "label": "Transducer Cable Length",
+      "placeholder": "e.g., 10 m",
+      "defaultValue": "10 m"
+    },
+    "powerSupply": {
+      "label": "Power Supply",
+      "placeholder": "e.g., 24 VDC",
+      "defaultValue": "24 VDC",
+      "disabled": true
+    },
+    "flangeType": {
+      "label": "Flange Type",
+      "placeholder": "e.g., ANSI CLASS 150",
+      "defaultValue": "ANSI CLASS 150"
+    },
+    "applicationType": {
+      "label": "Application Type",
+      "placeholder": "e.g., Domestic Water"
+    },
+    "protection": {
+      "label": "Protection",
+      "placeholder": "e.g., IP68",
+      "defaultValue": "IP68"
+    },
+    "pipeType": {
+      "label": "Pipe Type",
+      "placeholder": "e.g., CS"
+    },
+    "flowRateRange": {
+      "label": "Flow Rate Range",
+      "placeholder": "e.g., ±0.03 m/s ~ ±5 m/s",
+      "defaultValue": "±0.03 m/s ~ ±5 m/s"
+    },
+    "measuringTube": {
+      "label": "Measuring Tube",
+      "placeholder": "e.g., 304SS",
+      "defaultValue": "304SS"
+    },
+    "analogOutput": {
+      "label": "Analog Output",
+      "placeholder": "e.g., 4–20 mA",
+      "defaultValue": "4–20 mA"
+    },
+    "customerKFactor": {
+      "label": "Customer K Factor",
+      "placeholder": "e.g., 1.081"
+    },
+    "model": {
+      "label": "Model",
+      "placeholder": "e.g., INLINE MUF 1200"
+    },
+    "serialNo": {
+      "label": "Serial No.",
+      "placeholder": "e.g., F2006002"
+    },
+    "flowTubeSerialNo": {
+      "label": "Flow Tube Serial No.",
+      "placeholder": "e.g., M1203240127"
+    },
+    "measuringTechnology": {
+      "label": "Measuring Technology",
+      "placeholder": "e.g., Transit Time Ultrasonic",
+      "defaultValue": "Transit Time Ultrasonic"
+    },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., WM-01 TAWAM HOSPITAL"
+    },
+    "communicationInterface": {
+      "label": "Communication Interface",
+      "placeholder": "e.g., Modbus RS-485",
+      "defaultValue": "Modbus RS-485"
+    },
+    "address": {
+      "label": "Address",
+      "placeholder": "e.g., 56"
+    },
+    "baudRate": {
+      "label": "Baud Rate",
+      "placeholder": "e.g., 9600",
+      "defaultValue": "9600"
+    },
+    "parity": {
+      "label": "Parity",
+      "placeholder": "e.g., None",
+      "defaultValue": "None"
+    },
+    "flowRateUnit": {
+      "label": "Flow Rate Unit",
+      "placeholder": "e.g., L/s"
+    },
+    "flowTotalUnit": {
+      "label": "Flow Total Unit",
+      "placeholder": "e.g., Litres × 10"
+    },
+    "analogRange": {
+      "label": "Analog Range",
+      "placeholder": "e.g., 0 – 80 L/s",
+      "defaultValue": "0 – 80 L/s"
+    },
+    "calibratedBy": {
+      "label": "Calibrated By",
+      "placeholder": "Enter technician name",
+      "defaultValue": "JERIN ZACHARIA"
+    },
+    "date": {
+      "label": "Calibration Date",
+      "inputType": "date"
+    }
+  },
+  "sections": [
+    {
+      "title": "CONFIGURATION DATA",
+      "fields": [
+        "fluid",
+        "accuracy",
+        "pipeSize",
+        "pipeSchedule",
+        "flowtubeTempRange",
+        "transducerCableLength",
+        "powerSupply",
+        "flangeType",
+        "applicationType",
+        "protection",
+        "pipeType",
+        "flowRateRange",
+        "measuringTube",
+        "analogOutput",
+        "customerKFactor"
+      ]
+    },
+    {
+      "title": "FLOW METER INFORMATION",
+      "fields": [
+        "model",
+        "serialNo",
+        "flowTubeSerialNo",
+        "measuringTechnology",
+        "meterTag",
+        "communicationInterface",
+        "address",
+        "baudRate",
+        "parity"
+      ]
+    },
+    {
+      "title": "ENGINEERING UNITS",
+      "fields": [
+        "flowRateUnit",
+        "flowTotalUnit"
+      ]
+    },
+    {
+      "title": "CALIBRATION",
+      "fields": [
+        "calibratedBy",
+        "date"
+      ]
+    }
+  ]
+}
