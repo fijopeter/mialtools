@@ -10,8 +10,8 @@ export default function ToolsDashboard({ onOpenTool }) {
       icon: '📦',
       category: 'Generation',
       locked: false,
-      lastUsed: '3 hours ago',
-      usageCount: 62,
+      lastUsed: '--',
+      usageCount: 0,
       status: 'active',
       action: 'both'
     },
@@ -22,8 +22,8 @@ export default function ToolsDashboard({ onOpenTool }) {
       icon: '📄',
       category: 'Generation',
       locked: false,
-      lastUsed: '2 hours ago',
-      usageCount: 45,
+      lastUsed: '--',
+      usageCount: 0,
       status: 'active',
       action: 'certificate'
     },
@@ -34,8 +34,8 @@ export default function ToolsDashboard({ onOpenTool }) {
       icon: '🏷️',
       category: 'Generation',
       locked: false,
-      lastUsed: '1 day ago',
-      usageCount: 28,
+      lastUsed: '--',
+      usageCount: 0,
       status: 'active',
       action: 'tag'
     },

@@ -105,7 +105,7 @@ export default function HomePage() {
       {/* Bottom CTA */}
       <section className="home-footer">
         <div className="footer-content">
-          <h2>Ready to Generate?</h2>
+          <h2>Ready to Accelerate?</h2>
           <p>Navigate using the header menu to get started</p>
         </div>
       </section>
