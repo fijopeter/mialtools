@@ -1,5 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { flattenMeterCatalog } from '../config/meterCatalog'
+import React from 'react'
+import { flattenMeterCatalog, categories } from '../config/meterCatalog'
+import TiltCard from '../components/TiltCard'
 import './HomePage.css'
 
 const meterImages = {
@@ -15,40 +16,46 @@ const meterImages = {
   'ClampOnUltrasonicBTU5': new URL('../images/meter/ClampOnUltrasonicBTU5.png', import.meta.url).href,
 }
 
-export default function HomePage() {
-  const containerRef = useRef(null)
-  const itemsRef = useRef([])
-  const [visibleIndex, setVisibleIndex] = useState(0)
+const IconArrowRight = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M5 12h14M13 5l7 7-7 7"></path>
+  </svg>
+)
 
-  useEffect(() => {
-    const observerOptions = {
-      threshold: [0.1, 0.5, 0.9],
-      rootMargin: '0px 0px -20% 0px'
-    }
+const IconLayers = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+    <polyline points="2 17 12 22 22 17"></polyline>
+    <polyline points="2 12 12 17 22 12"></polyline>
+  </svg>
+)
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const index = itemsRef.current.indexOf(entry.target)
-        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-          setVisibleIndex(index)
-          entry.target.classList.add('visible')
-        } else {
-          entry.target.classList.remove('visible')
-        }
-      })
-    }, observerOptions)
+const IconGrid = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="3" y="3" width="7" height="7"></rect>
+    <rect x="14" y="3" width="7" height="7"></rect>
+    <rect x="14" y="14" width="7" height="7"></rect>
+    <rect x="3" y="14" width="7" height="7"></rect>
+  </svg>
+)
 
-    itemsRef.current.forEach((item) => {
-      if (item) observer.observe(item)
-    })
+const IconFileText = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <polyline points="14 2 14 8 20 8"></polyline>
+    <line x1="16" y1="13" x2="8" y2="13"></line>
+    <line x1="16" y1="17" x2="8" y2="17"></line>
+  </svg>
+)
 
-    return () => {
-      itemsRef.current.forEach((item) => {
-        if (item) observer.unobserve(item)
-      })
-    }
-  }, [])
+const IconClock = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10"></circle>
+    <polyline points="12 6 12 12 16 14"></polyline>
+  </svg>
+)
 
+export default function HomePage({ onExploreClick }) {
   const allMeters = flattenMeterCatalog()
 
   // Get unique meter categories with their first entry for display
@@ -61,52 +68,88 @@ export default function HomePage() {
 
   const meterList = Object.values(uniqueMeters)
 
+  const stats = [
+    { icon: IconLayers, value: meterList.length, label: 'Meter Types' },
+    { icon: IconGrid, value: categories.length, label: 'Categories' },
+    { icon: IconFileText, value: '2', label: 'Document Types' },
+    { icon: IconClock, value: '24/7', label: 'Available' },
+  ]
+
   return (
-    <div className="home-page" ref={containerRef}>
-      {/* Hero Section */}
-      <section className="home-hero">
-        <div className="hero-content">
-          <h1 className="hero-title">MIAL Tools</h1>
-          <p className="hero-subtitle">Modern Tools for you</p>
-          <p className="hero-description">Streamline your workflow with our comprehensive suite of tools</p>
+    <div className="home-page container">
+      <div className="bento-grid home-bento">
+        <div className="bento-tile bento-tile--hero home-hero glass-card">
+          <div className="home-hero__glow" />
+          <div className="home-hero__content">
+            <span className="home-hero__badge">Calibration Toolkit</span>
+            <h1 className="home-hero__title">
+              Welcome to <span className="gradient-text">MIAL Tools</span>
+            </h1>
+            <p className="home-hero__desc">
+              Generate calibration certificates, print tags, and manage your certificate repository — all from one streamlined dashboard.
+            </p>
+            <button className="home-hero__cta" onClick={onExploreClick}>
+              <span>Explore Tools</span>
+              <IconArrowRight />
+            </button>
+          </div>
+        </div>
+
+        {stats.map((stat, idx) => {
+          const Icon = stat.icon
+          return (
+            <div
+              key={stat.label}
+              className="bento-tile home-stat glass-card"
+              style={{ animationDelay: `${idx * 0.08}s` }}
+            >
+              <span className="home-stat__icon">
+                <Icon />
+              </span>
+              <span className="home-stat__value gradient-text">{stat.value}</span>
+              <span className="home-stat__label">{stat.label}</span>
+            </div>
+          )
+        })}
+      </div>
+
+      <section className="home-showcase">
+        <div className="home-showcase__header">
+          <h2>Supported Meters</h2>
+          <p>Browse the instrument families covered by our certificate and tag generators.</p>
+        </div>
+        <div className="home-showcase__row">
+          <div className="home-showcase__track">
+            {[...meterList, ...meterList].map((meter, idx) => (
+              <TiltCard key={`${meter.id}-${idx}`} className="glass-card showcase-card">
+                <div className="showcase-card__image">
+                  <img
+                    src={meterImages[meter.id] || meterImages[meter.code]}
+                    alt={meter.label}
+                    onError={(e) => {
+                      e.target.style.display = 'none'
+                    }}
+                  />
+                </div>
+                <div className="showcase-card__body">
+                  <span className="showcase-card__category">{meter.categoryLabel}</span>
+                  <h3 className="showcase-card__title">{meter.label}</h3>
+                  <p className="showcase-card__desc">{meter.description}</p>
+                </div>
+              </TiltCard>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Scrolling Carousel */}
-      <section className="meters-carousel">
-        {meterList.map((meter, idx) => (
-          <div
-            key={meter.id}
-            ref={(el) => (itemsRef.current[idx] = el)}
-            className={`carousel-item ${idx % 2 === 0 ? 'image-left' : 'image-right'} fade-item`}
-          >
-            <div className="carousel-image">
-              <img
-                src={meterImages[meter.id] || meterImages[meter.code]}
-                alt={meter.label}
-                onError={(e) => {
-                  e.target.style.display = 'none'
-                }}
-              />
-            </div>
-
-            <div className="carousel-content">
-              <div className="content-wrapper">
-                {/* <span className="meter-number">0{idx + 1}</span> */}
-                <h2 className="meter-title">{meter.label}</h2>
-                <p className="meter-category">{meter.categoryLabel}</p>
-                <p className="meter-long-description">{meter.description}</p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </section>
-
-      {/* Bottom CTA */}
-      <section className="home-footer">
+      <section className="home-footer glass-panel">
         <div className="footer-content">
           <h2>Ready to Accelerate?</h2>
-          <p>Navigate using the header menu to get started</p>
+          <p>Jump straight into the tools dashboard and start generating certificates and tags.</p>
+          <button className="home-hero__cta" onClick={onExploreClick}>
+            <span>Browse Tools</span>
+            <IconArrowRight />
+          </button>
         </div>
       </section>
     </div>

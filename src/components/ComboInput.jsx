@@ -55,7 +55,7 @@ export default function ComboInput({
 
       <button
         type="button"
-        className="combo-toggle"
+        className={`combo-toggle ${isOpen ? 'combo-toggle--open' : ''}`}
         disabled={disabled}
         aria-label="Show options"
         aria-haspopup="listbox"
@@ -66,7 +66,9 @@ export default function ComboInput({
         }}
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        ▼
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M6 9l6 6 6-6"></path>
+        </svg>
       </button>
 
       {isOpen && normalizedOptions.length > 0 && (

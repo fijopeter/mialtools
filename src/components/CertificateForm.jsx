@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { jsPDF } from 'jspdf'
 import { meterCatalog, flattenMeterCatalog } from '../config/meterCatalog'
 import { mergeMeterAndTagSchemas, buildInitialFormData, TAG_SECTION_TITLE } from '../utils/mergeSchemas'
@@ -6,6 +7,7 @@ import { drawCertificate } from '../utils/drawCertificate'
 import { drawTag } from '../utils/drawMeterDocuments'
 import { validateSignatureImageFile, signatureImageRulesHintText } from '../utils/validateSignatureImage'
 import ComboInput from './ComboInput'
+import TiltCard from './TiltCard'
 import './CertificateForm.css'
 import tagSchemaList from '..//tagSchemasOnly/tagschema/tag.json'
 
@@ -21,6 +23,39 @@ const loadImage = (src) =>
     img.src = src;
   });
 
+const IconCheck = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+    <path d="M5 13l4 4L19 7"></path>
+  </svg>
+)
+
+const IconClose = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M18 6 6 18M6 6l12 12"></path>
+  </svg>
+)
+
+const IconGauge = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="9"></circle>
+    <path d="M12 12 16 8"></path>
+    <circle cx="12" cy="12" r="1" fill="currentColor"></circle>
+  </svg>
+)
+
+const IconSearch = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"></circle>
+    <path d="m21 21-4.35-4.35"></path>
+  </svg>
+)
+
+const IconArrowRight = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M5 12h14M13 5l7 7-7 7"></path>
+  </svg>
+)
+
 export default function CertificateForm({ meter, formType = 'both', onBack, onSubmit }) {
   const [selectedMeter, setSelectedMeter] = useState(meter)
   const [searchQuery, setSearchQuery] = useState('')
@@ -31,6 +66,10 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
   const [tagData, setTagData] = useState(null)
   const [signatureImageDataUrl, setSignatureImageDataUrl] = useState(null)
   const [signatureImageError, setSignatureImageError] = useState(null)
+  const [isRenderingCertificate, setIsRenderingCertificate] = useState(false)
+  const [isRenderingTag, setIsRenderingTag] = useState(false)
+  const [isDownloadingCertificate, setIsDownloadingCertificate] = useState(false)
+  const [isDownloadingTag, setIsDownloadingTag] = useState(false)
   const certificateCanvasRef = useRef(null)
   const tagCanvasRef = useRef(null)
 
@@ -49,7 +88,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
   // Get schema-based form data structure
   const { fieldMeta, sections } = useMemo(() => {
     if (!selectedMeter?.meterSchema) return { fieldMeta: {}, sections: [] }
-    
+
     const merged = mergeMeterAndTagSchemas(
       selectedMeter.meterSchema,
       selectedMeter.tagSchema,
@@ -59,7 +98,6 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
 
     // Filter sections based on form type
     let filteredSections = merged.sections
-    console.log('meter', selectedMeter);
     if (formType === 'certificate') {
       // Certificate only: exclude tag-specific sections
       filteredSections = merged.sections.filter(s => s.title !== TAG_SECTION_TITLE)
@@ -159,50 +197,70 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
 
   useEffect(() => {
     if (showCertificatePreview && certificateData && certificateCanvasRef.current) {
-      drawCertificate({
-        canvas: certificateCanvasRef.current,
-        certificateData,
-        fieldMeta,
-        certificateConfig: selectedMeter.certificateConfig,
-        loadImage,
-        watermarkLogo: WATERMARK_LOGO,
-        leftLogo: LEFT_LOGO,
-        rightLogo: RIGHT_LOGO,
-      });
+      let cancelled = false
+      setIsRenderingCertificate(true)
+      ;(async () => {
+        await drawCertificate({
+          canvas: certificateCanvasRef.current,
+          certificateData,
+          fieldMeta,
+          certificateConfig: selectedMeter.certificateConfig,
+          loadImage,
+          watermarkLogo: WATERMARK_LOGO,
+          leftLogo: LEFT_LOGO,
+          rightLogo: RIGHT_LOGO,
+        });
+        if (!cancelled) setIsRenderingCertificate(false)
+      })()
+      return () => { cancelled = true }
     }
   }, [showCertificatePreview, certificateData, fieldMeta, selectedMeter])
 
   useEffect(() => {
     if (showTagPreview && tagData && tagCanvasRef.current) {
-      drawTag({
-        canvasElement: tagCanvasRef.current,
-        dataToRender: tagData,
-        tagDrawConfig: selectedMeter.tagDrawConfig,
-        leftLogo: LEFT_LOGO,
-        loadImage,
-      });
+      let cancelled = false
+      setIsRenderingTag(true)
+      ;(async () => {
+        await drawTag({
+          canvasElement: tagCanvasRef.current,
+          dataToRender: tagData,
+          tagDrawConfig: selectedMeter.tagDrawConfig,
+          leftLogo: LEFT_LOGO,
+          loadImage,
+        });
+        if (!cancelled) setIsRenderingTag(false)
+      })()
+      return () => { cancelled = true }
     }
   }, [showTagPreview, tagData, selectedMeter])
 
   const downloadCertificatePdf = () => {
     if (!certificateCanvasRef.current || !certificateData) return;
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    pdf.addImage(
-      certificateCanvasRef.current.toDataURL('image/png'),
-      'PNG',
-      0,
-      0,
-      297,
-      210,
-    );
-    pdf.save(`${certificateData.serialNo || 'unnamed'}-certificate.pdf`);
+    setIsDownloadingCertificate(true)
+    setTimeout(() => {
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      pdf.addImage(
+        certificateCanvasRef.current.toDataURL('image/png'),
+        'PNG',
+        0,
+        0,
+        297,
+        210,
+      );
+      pdf.save(`${certificateData.serialNo || 'unnamed'}-certificate.pdf`);
+      setIsDownloadingCertificate(false)
+    }, 0)
   }
 
   const downloadTagPdf = () => {
     if (!tagCanvasRef.current || !tagData) return;
-    const tagPdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [150, 90] });
-    tagPdf.addImage(tagCanvasRef.current.toDataURL('image/png'), 'PNG', 0, 0, 150, 90);
-    tagPdf.save(`${tagData.serialNo || 'file'}-tag.pdf`);
+    setIsDownloadingTag(true)
+    setTimeout(() => {
+      const tagPdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [150, 90] });
+      tagPdf.addImage(tagCanvasRef.current.toDataURL('image/png'), 'PNG', 0, 0, 150, 90);
+      tagPdf.save(`${tagData.serialNo || 'file'}-tag.pdf`);
+      setIsDownloadingTag(false)
+    }, 0)
   }
 
   const handleNext = () => {
@@ -234,12 +292,12 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     onSubmit?.(formData)
   }
 
-  const isCalibrationSignOffSection = 
+  const isCalibrationSignOffSection =
     (formType !== 'tag') &&
     sections[currentSection]?.fields?.includes('calibratedBy') &&
     sections[currentSection]?.fields?.includes('date');
 
-  const formTitle = formType === 'certificate' 
+  const formTitle = formType === 'certificate'
     ? 'Certificate Generator'
     : formType === 'tag'
     ? 'Tag Generator'
@@ -254,15 +312,22 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
           </svg>
         </button>
         <h2>{formTitle}{selectedMeter && ` - ${selectedMeter.label}`}</h2>
-        {selectedMeter && (
+        {selectedMeter && sections.length > 1 && (
           <div className="form-progress">
-            {sections.length > 1 && sections.map((_, idx) => (
-              <span 
-                key={idx}
-                className={`progress-step ${idx <= currentSection ? 'active' : ''}`}
-              >
-                {idx + 1}
-              </span>
+            {sections.map((_, idx) => (
+              <React.Fragment key={idx}>
+                <div
+                  className={`progress-step ${idx < currentSection ? 'completed' : ''} ${idx === currentSection ? 'active' : ''}`}
+                  title={sections[idx]?.title}
+                >
+                  <span className="progress-step-circle">
+                    {idx < currentSection ? <IconCheck /> : idx + 1}
+                  </span>
+                </div>
+                {idx < sections.length - 1 && (
+                  <div className={`progress-line ${idx < currentSection ? 'completed' : ''}`}></div>
+                )}
+              </React.Fragment>
             ))}
           </div>
         )}
@@ -278,6 +343,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
             </div>
 
             <div className="search-box">
+              <span className="search-box-icon"><IconSearch /></span>
               <input
                 type="text"
                 placeholder="Search meters by name or code..."
@@ -288,18 +354,32 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
             </div>
 
             <div className="meter-grid">
-              {filteredMeters.map(m => (
-                <button
+              {filteredMeters.map((m, idx) => (
+                <TiltCard
                   key={m.id}
-                  className="meter-option"
+                  className="glass-card meter-option"
+                  style={{ animationDelay: `${Math.min(idx * 0.02, 0.6)}s` }}
                   onClick={() => handleSelectMeter(m)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleSelectMeter(m)
+                    }
+                  }}
                 >
+                  <div className="meter-option-icon">
+                    <IconGauge />
+                  </div>
                   <div className="meter-option-info">
                     <h4>{m.label}</h4>
                     <p>{m.code}</p>
                   </div>
-                  <div className="meter-option-arrow">→</div>
-                </button>
+                  <div className="meter-option-arrow">
+                    <IconArrowRight />
+                  </div>
+                </TiltCard>
               ))}
             </div>
           </div>
@@ -313,7 +393,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
             <div className="form-step animate-fade-in">
               <div className="form-section">
                 <h3>{sections[currentSection].title}</h3>
-                
+
                 <div className="form-grid">
                   {sections[currentSection].fields.map((field) => (
                     <label key={field} className="field-group">
@@ -348,16 +428,16 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
 
           {/* Form Footer */}
           <div className="form-footer">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn btn-secondary"
               onClick={handlePrev}
             >
               {currentSection === 0 ? 'Cancel' : 'Previous'}
             </button>
-            
+
             {currentSection < sections.length - 1 ? (
-              <button 
+              <button
                 type="button"
                 className="btn btn-primary"
                 onClick={handleNext}
@@ -367,7 +447,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
             ) : (
               <>
                 {(formType === 'certificate' || formType === 'both') && (
-                  <button 
+                  <button
                     type="button"
                     className="btn btn-primary"
                     onClick={handlePreviewCertificate}
@@ -376,7 +456,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
                   </button>
                 )}
                 {(formType === 'tag' || formType === 'both') && (
-                  <button 
+                  <button
                     type="button"
                     className="btn btn-primary"
                     onClick={handlePreviewTag}
@@ -391,41 +471,85 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
       )}
 
       {/* Certificate Preview Modal */}
-      {showCertificatePreview && (
+      {showCertificatePreview && createPortal(
         <div className="modal-overlay">
           <div className="modal-box" style={{ width: '95%', maxHeight: '95vh', overflow: 'auto' }}>
-            <canvas ref={certificateCanvasRef} />
+            <button className="modal-close" onClick={() => setShowCertificatePreview(false)} title="Close" aria-label="Close">
+              <IconClose />
+            </button>
+            <h3>Certificate Preview</h3>
+            <div className="canvas-wrapper">
+              <canvas ref={certificateCanvasRef} />
+              {isRenderingCertificate && (
+                <div className="canvas-loading-overlay">
+                  <span className="spinner spinner--lg"></span>
+                  <p>Rendering certificate...</p>
+                </div>
+              )}
+            </div>
             <div className="modal-actions">
               <button
                 className="btn btn-success"
                 onClick={downloadCertificatePdf}
+                disabled={isDownloadingCertificate || isRenderingCertificate}
               >
-                Download PDF
+                {isDownloadingCertificate ? (
+                  <>
+                    <span className="spinner"></span>
+                    Generating...
+                  </>
+                ) : (
+                  'Download PDF'
+                )}
               </button>
               <button className="btn btn-secondary" onClick={() => setShowCertificatePreview(false)}>
                 Close
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Tag Preview Modal */}
-      {showTagPreview && (
+      {showTagPreview && createPortal(
         <div className="modal-overlay">
           <div className="modal-box">
+            <button className="modal-close" onClick={() => setShowTagPreview(false)} title="Close" aria-label="Close">
+              <IconClose />
+            </button>
             <h3>Tag Preview</h3>
-            <canvas ref={tagCanvasRef} />
+            <div className="canvas-wrapper">
+              <canvas ref={tagCanvasRef} />
+              {isRenderingTag && (
+                <div className="canvas-loading-overlay">
+                  <span className="spinner spinner--lg"></span>
+                  <p>Rendering tag...</p>
+                </div>
+              )}
+            </div>
             <div className="modal-actions">
-              <button className="btn btn-success" onClick={downloadTagPdf}>
-                Download Tag
+              <button
+                className="btn btn-success"
+                onClick={downloadTagPdf}
+                disabled={isDownloadingTag || isRenderingTag}
+              >
+                {isDownloadingTag ? (
+                  <>
+                    <span className="spinner"></span>
+                    Generating...
+                  </>
+                ) : (
+                  'Download Tag'
+                )}
               </button>
               <button className="btn btn-secondary" onClick={() => setShowTagPreview(false)}>
                 Close
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
