@@ -40,14 +40,16 @@ export default function ToolsDashboard({ onOpenTool }) {
       action: 'tag'
     },
     {
-      id: 'batch-process',
-      name: 'Find Certificates & Tags',
-      description: 'Search and retrieve existing certificates and tags - Coming soon',
-      icon: '⚙️',
+      id: 'certificate-vault',
+      name: 'Certificate Repository',
+      description: 'Upload certificates and tags, then search and download them by file name',
+      icon: '🗄️',
       category: 'Management',
-      locked: true,
-      unlocksAt: '2026-07-01',
-      status: 'locked'
+      locked: false,
+      lastUsed: '--',
+      usageCount: 0,
+      status: 'active',
+      action: 'vault'
     }
   ])
 

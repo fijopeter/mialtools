@@ -4,6 +4,7 @@ import ScrollableOptions from './components/ScrollableOptions'
 import MeterDetail from './components/MeterDetail'
 import CertificateForm from './components/CertificateForm'
 import ToolsDashboard from './components/ToolsDashboard'
+import CertificateVault from './components/CertificateVault'
 import HomePage from './pages/HomePage'
 import { meterCatalog, categories, getMetersByCategory } from './config/meterCatalog'
 import './App.css'
@@ -99,6 +100,8 @@ export default function App() {
       setFormType('both')
       setCurrentPage('form')
       setMeterForForm(null)
+    } else if (toolAction === 'vault') {
+      setCurrentPage('vault')
     }
   }
 
@@ -126,6 +129,13 @@ export default function App() {
         {/* Home Page - Scrolling Showcase */}
         {currentPage === 'home' && (
           <HomePage />
+        )}
+
+        {/* Certificate Repository Page */}
+        {currentPage === 'vault' && (
+          <div className="form-page-container">
+            <CertificateVault onBack={() => setCurrentPage('tools')} />
+          </div>
         )}
 
         {/* Certificate/Tag Form Page */}

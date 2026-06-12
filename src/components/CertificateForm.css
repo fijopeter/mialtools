@@ -456,6 +456,17 @@
   box-shadow: 0 6px 20px rgba(46, 52, 142, 0.3);
 }
 
+.btn-danger {
+  background: var(--error-color);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.btn-danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+}
+
 /* Field Group - Schema-based */
 .field-group {
   display: flex;
