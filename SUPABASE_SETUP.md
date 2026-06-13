@@ -72,17 +72,167 @@ using (bucket_id = 'certificates');
 > the delete feature was added, just run the `certificates_anon_delete` policy
 > above in the **SQL Editor** — the rest of your setup doesn't need to change.
 
-## 5. Restart the dev server
+## 5. Enable authentication & upload tracking
+
+The app now requires users to sign in (Login / Register / Logout) before
+using any tool, and the Certificate Repository records who uploaded each
+file. Go to **SQL Editor** in the Supabase dashboard, paste the SQL below,
+and run it:
+
+```sql
+-- Track who uploaded each certificate/tag
+create table public.certificate_uploads (
+  id uuid primary key default gen_random_uuid(),
+  file_name text not null unique,
+  uploaded_by uuid references auth.users(id) on delete set null,
+  uploaded_by_name text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.certificate_uploads enable row level security;
+
+create policy "certificate_uploads_select" on public.certificate_uploads
+  for select to authenticated using (true);
+
+create policy "certificate_uploads_upsert" on public.certificate_uploads
+  for insert to authenticated with check (auth.uid() = uploaded_by);
+
+create policy "certificate_uploads_update" on public.certificate_uploads
+  for update to authenticated using (true) with check (auth.uid() = uploaded_by);
+
+create policy "certificate_uploads_delete" on public.certificate_uploads
+  for delete to authenticated using (true);
+
+-- The bucket policies in step 4 above were written for the "anon" role.
+-- Now that the app requires sign-in, add matching policies for "authenticated"
+-- (the old anon ones can be dropped once everyone has an account):
+create policy "certificates_authenticated_upload" on storage.objects
+  for insert to authenticated with check (bucket_id = 'certificates');
+create policy "certificates_authenticated_read" on storage.objects
+  for select to authenticated using (bucket_id = 'certificates');
+create policy "certificates_authenticated_update" on storage.objects
+  for update to authenticated using (bucket_id = 'certificates') with check (bucket_id = 'certificates');
+create policy "certificates_authenticated_delete" on storage.objects
+  for delete to authenticated using (bucket_id = 'certificates');
+```
+
+Then, in **Authentication > Providers > Email**, decide whether new accounts
+need to confirm their email before signing in:
+
+- **Confirm email ON** (default) — after registering, users see a "check your
+  email" message and must click the confirmation link before they can sign in.
+- **Confirm email OFF** — users are signed in immediately after registering.
+
+Either works with the app; pick whichever fits how your team will use it.
+
+## 6. Restrict registration with admin approval
+
+By default, anyone who registers gets an account but **can't use the app**
+until you approve them. Go to **SQL Editor** and run:
+
+```sql
+-- One row per signed-up user, with an admin-controlled approval flag
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  email text,
+  full_name text,
+  approved boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table public.profiles enable row level security;
+
+create policy "profiles_select_own" on public.profiles
+  for select to authenticated using (auth.uid() = id);
+
+-- Auto-create a profile row whenever someone signs up
+create function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  insert into public.profiles (id, email, full_name)
+  values (new.id, new.email, new.raw_user_meta_data->>'full_name');
+  return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+
+-- Backfill profiles for anyone who registered before this trigger existed
+insert into public.profiles (id, email, full_name)
+select id, email, raw_user_meta_data->>'full_name' from auth.users
+on conflict (id) do nothing;
+
+-- Helper used by RLS policies to check the current user's approval status
+create function public.is_approved()
+returns boolean
+language sql
+security definer
+stable
+as $$
+  select coalesce((select approved from public.profiles where id = auth.uid()), false);
+$$;
+
+-- Re-create the policies from step 5 so they also require an approved account
+drop policy if exists "certificate_uploads_select" on public.certificate_uploads;
+create policy "certificate_uploads_select" on public.certificate_uploads
+  for select to authenticated using (public.is_approved());
+
+drop policy if exists "certificate_uploads_upsert" on public.certificate_uploads;
+create policy "certificate_uploads_upsert" on public.certificate_uploads
+  for insert to authenticated with check (auth.uid() = uploaded_by and public.is_approved());
+
+drop policy if exists "certificate_uploads_update" on public.certificate_uploads;
+create policy "certificate_uploads_update" on public.certificate_uploads
+  for update to authenticated using (public.is_approved()) with check (auth.uid() = uploaded_by and public.is_approved());
+
+drop policy if exists "certificate_uploads_delete" on public.certificate_uploads;
+create policy "certificate_uploads_delete" on public.certificate_uploads
+  for delete to authenticated using (public.is_approved());
+
+drop policy if exists "certificates_authenticated_upload" on storage.objects;
+create policy "certificates_authenticated_upload" on storage.objects
+  for insert to authenticated with check (bucket_id = 'certificates' and public.is_approved());
+
+drop policy if exists "certificates_authenticated_read" on storage.objects;
+create policy "certificates_authenticated_read" on storage.objects
+  for select to authenticated using (bucket_id = 'certificates' and public.is_approved());
+
+drop policy if exists "certificates_authenticated_update" on storage.objects;
+create policy "certificates_authenticated_update" on storage.objects
+  for update to authenticated using (bucket_id = 'certificates' and public.is_approved()) with check (bucket_id = 'certificates' and public.is_approved());
+
+drop policy if exists "certificates_authenticated_delete" on storage.objects;
+create policy "certificates_authenticated_delete" on storage.objects
+  for delete to authenticated using (bucket_id = 'certificates' and public.is_approved());
+```
+
+**To approve someone:** open **Table Editor > profiles**, find the row by
+their `email`, and toggle `approved` to `true` (or run
+`update public.profiles set approved = true where email = 'person@example.com';`
+in the SQL Editor). Next time they sign in (or refresh the page), they get
+full access. Until then, signed-in users see a "pending approval" screen.
+
+## 7. Restart the dev server
 
 After saving `.env`, restart `npm run dev` so Vite picks up the new environment
 variables.
 
 ## Done
 
+The app now opens on a **Sign In / Create Account** page — register an
+account (or sign in) to access Home, Tools, and the Certificate Repository.
+
 Open the **Certificate Repository** tool from the Tools page:
 
 - **Upload Certificate** — drag & drop or browse a PDF, optionally rename it, and upload.
+  The signed-in user's name is recorded as the uploader.
 - **Search & Download** — search by file name, download, or delete a certificate.
+  Each file shows who uploaded it.
 
 ## Notes / future ideas
 

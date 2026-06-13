@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './Sidebar.css'
 import mlogo from '../images/Mlogo-nobg.png'
 
@@ -31,10 +31,11 @@ const IconChevron = () => (
   </svg>
 )
 
-const IconUser = () => (
+const IconLogout = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-    <circle cx="12" cy="7" r="4"></circle>
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+    <polyline points="16 17 21 12 16 7"></polyline>
+    <line x1="21" y1="12" x2="9" y2="12"></line>
   </svg>
 )
 
@@ -44,9 +45,24 @@ const NAV_ITEMS = [
   { id: 'vault', label: 'Repository', icon: IconArchive },
 ]
 
-export default function Sidebar({ currentPage, onNavigate, collapsed, onToggleCollapse }) {
+export default function Sidebar({ currentPage, onNavigate, collapsed, onToggleCollapse, userName, userEmail, onLogout }) {
   const activeId = currentPage === 'form' ? 'tools' : currentPage
   const activeIndex = NAV_ITEMS.findIndex((item) => item.id === activeId)
+  const [accountOpen, setAccountOpen] = useState(false)
+  const accountRef = useRef(null)
+
+  useEffect(() => {
+    if (!accountOpen) return
+    const handleClickOutside = (e) => {
+      if (accountRef.current && !accountRef.current.contains(e.target)) {
+        setAccountOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [accountOpen])
+
+  const initial = (userName || '?').trim().charAt(0).toUpperCase()
 
   return (
     <aside className={`sidebar ${collapsed ? 'sidebar--collapsed' : ''}`}>
@@ -101,9 +117,35 @@ export default function Sidebar({ currentPage, onNavigate, collapsed, onToggleCo
         >
           <IconChevron />
         </button>
-        <button className="sidebar__account" title="Account" aria-label="Account">
-          <IconUser />
-        </button>
+        <div className="sidebar__account-wrap" ref={accountRef}>
+          {accountOpen && (
+            <div className="sidebar__account-menu glass-card animate-scale-up">
+              <div className="sidebar__account-info">
+                <span className="sidebar__account-name">{userName}</span>
+                <span className="sidebar__account-email">{userEmail}</span>
+              </div>
+              <button
+                className="sidebar__logout"
+                onClick={() => {
+                  setAccountOpen(false)
+                  onLogout && onLogout()
+                }}
+              >
+                <IconLogout />
+                <span>Log out</span>
+              </button>
+            </div>
+          )}
+          <button
+            className="sidebar__account"
+            onClick={() => setAccountOpen((open) => !open)}
+            title="Account"
+            aria-label="Account"
+          >
+            <span className="sidebar__avatar">{initial}</span>
+            <span className="sidebar__label">{userName}</span>
+          </button>
+        </div>
       </div>
     </aside>
   )

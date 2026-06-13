@@ -4,7 +4,10 @@ import Topbar from './components/Topbar'
 import CertificateForm from './components/CertificateForm'
 import ToolsDashboard from './components/ToolsDashboard'
 import CertificateVault from './components/CertificateVault'
+import AuthPage from './components/AuthPage'
+import PendingApprovalPage from './components/PendingApprovalPage'
 import HomePage from './pages/HomePage'
+import { useAuth, displayName } from './contexts/AuthContext'
 import './App.css'
 
 const FORM_TITLES = {
@@ -14,6 +17,7 @@ const FORM_TITLES = {
 }
 
 export default function App() {
+  const { session, user, loading, isConfigured, isApproved, signOut } = useAuth()
   const [currentPage, setCurrentPage] = useState('home') // home is landing page
   const [searchQuery, setSearchQuery] = useState('')
   const [meterForForm, setMeterForForm] = useState(null)
@@ -31,6 +35,22 @@ export default function App() {
       clearTimeout(resetTimer)
     }
   }, [currentPage])
+
+  if (loading) {
+    return (
+      <div className="auth-loading">
+        <span className="spinner spinner--lg" />
+      </div>
+    )
+  }
+
+  if (!isConfigured || !session) {
+    return <AuthPage />
+  }
+
+  if (!isApproved) {
+    return <PendingApprovalPage />
+  }
 
   const handleSearchChange = (query) => {
     setSearchQuery(query)
@@ -110,6 +130,9 @@ export default function App() {
         onNavigate={handleSidebarNavigate}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed((c) => !c)}
+        userName={displayName(user)}
+        userEmail={user?.email}
+        onLogout={signOut}
       />
 
       <div className={`app-content ${sidebarCollapsed ? 'app-content--collapsed' : ''}`}>

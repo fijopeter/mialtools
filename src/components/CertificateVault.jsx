@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { supabase, isSupabaseConfigured, CERTIFICATES_BUCKET } from '../utils/supabaseClient'
+import { useAuth, displayName } from '../contexts/AuthContext'
 import './CertificateVault.css'
 
 const IconUploadCloud = () => (
@@ -14,6 +15,13 @@ const IconPdf = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
     <path d="M14 2v6h6" />
+  </svg>
+)
+
+const IconEye = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+    <circle cx="12" cy="12" r="3" />
   </svg>
 )
 
@@ -115,6 +123,8 @@ const isPdfFile = (file) =>
   file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))
 
 export default function CertificateVault({ onBack }) {
+  const { user } = useAuth()
+  const uploaderName = displayName(user)
   const [activeTab, setActiveTab] = useState('browse')
 
   // Upload state
@@ -135,6 +145,8 @@ export default function CertificateVault({ onBack }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [downloadingName, setDownloadingName] = useState(null)
   const [downloadError, setDownloadError] = useState('')
+  const [viewingName, setViewingName] = useState(null)
+  const [viewError, setViewError] = useState('')
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
   const [deleteError, setDeleteError] = useState('')
@@ -151,9 +163,25 @@ export default function CertificateVault({ onBack }) {
     if (error) {
       setLoadError(error.message || 'Failed to load certificates.')
       setFiles([])
-    } else {
-      setFiles((data || []).filter((item) => item.id && !item.name.startsWith('.')))
+      setIsLoadingFiles(false)
+      return
     }
+
+    const validFiles = (data || []).filter((item) => item.id && !item.name.startsWith('.'))
+
+    if (validFiles.length > 0) {
+      const { data: uploads } = await supabase
+        .from('certificate_uploads')
+        .select('file_name, uploaded_by_name')
+        .in('file_name', validFiles.map((file) => file.name))
+
+      const uploaderByFileName = new Map((uploads || []).map((row) => [row.file_name, row.uploaded_by_name]))
+      validFiles.forEach((file) => {
+        file.uploadedByName = uploaderByFileName.get(file.name) || null
+      })
+    }
+
+    setFiles(validFiles)
     setIsLoadingFiles(false)
   }, [])
 
@@ -252,6 +280,14 @@ export default function CertificateVault({ onBack }) {
     setRecentUploads((prev) => [{ name: finalName, at: new Date().toISOString() }, ...prev].slice(0, 5))
     setSelectedFile(null)
     setCustomName('')
+
+    if (user) {
+      await supabase.from('certificate_uploads').upsert(
+        { file_name: finalName, uploaded_by: user.id, uploaded_by_name: uploaderName },
+        { onConflict: 'file_name' }
+      )
+    }
+
     fetchFiles()
   }
 
@@ -282,6 +318,25 @@ export default function CertificateVault({ onBack }) {
     }
   }
 
+  const handleView = async (file) => {
+    setViewingName(file.name)
+    setViewError('')
+
+    try {
+      const { data, error } = await supabase.storage.from(CERTIFICATES_BUCKET).createSignedUrl(file.name, 60)
+
+      if (error || !data?.signedUrl) {
+        throw error || new Error('Could not generate a preview link.')
+      }
+
+      window.open(data.signedUrl, '_blank', 'noopener,noreferrer')
+    } catch (err) {
+      setViewError(err?.message || `Failed to open "${file.name}".`)
+    } finally {
+      setViewingName(null)
+    }
+  }
+
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return
     setIsDeleting(true)
@@ -299,6 +354,8 @@ export default function CertificateVault({ onBack }) {
           `"${deleteTarget.name}" was not deleted. Your Supabase project may be missing the delete permission — see SUPABASE_SETUP.md.`
         )
       }
+
+      await supabase.from('certificate_uploads').delete().eq('file_name', deleteTarget.name)
 
       setFiles((prev) => prev.filter((f) => f.name !== deleteTarget.name))
       setDeleteTarget(null)
@@ -543,6 +600,12 @@ VITE_SUPABASE_ANON_KEY=your-anon-public-key`}
                     {downloadError}
                   </div>
                 )}
+                {viewError && (
+                  <div className="vault-banner vault-banner--error animate-fade-in">
+                    <IconAlert />
+                    {viewError}
+                  </div>
+                )}
 
                 {isLoadingFiles ? (
                   <div className="vault-grid">
@@ -579,9 +642,27 @@ VITE_SUPABASE_ANON_KEY=your-anon-public-key`}
                             <span>{formatBytes(file.metadata?.size)}</span>
                             <span className="vault-dot">•</span>
                             <span>{formatDateTime(file.updated_at || file.created_at)}</span>
+                            {file.uploadedByName && (
+                              <>
+                                <span className="vault-dot">•</span>
+                                <span>Uploaded by {file.uploadedByName}</span>
+                              </>
+                            )}
                           </div>
                         </div>
                         <div className="vault-card-actions">
+                          <button
+                            className="vault-view-btn"
+                            onClick={() => handleView(file)}
+                            disabled={viewingName === file.name}
+                          >
+                            {viewingName === file.name ? (
+                              <span className="vault-spinner" />
+                            ) : (
+                              <IconEye />
+                            )}
+                            {viewingName === file.name ? 'Opening' : 'View'}
+                          </button>
                           <button
                             className="vault-download-btn"
                             onClick={() => handleDownload(file)}
