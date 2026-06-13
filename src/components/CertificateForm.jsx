@@ -5,7 +5,7 @@ import { meterCatalog, flattenMeterCatalog } from '../config/meterCatalog'
 import { mergeMeterAndTagSchemas, buildInitialFormData, TAG_SECTION_TITLE } from '../utils/mergeSchemas'
 import { drawCertificate } from '../utils/drawCertificate'
 import { drawTag } from '../utils/drawMeterDocuments'
-import { validateSignatureImageFile, signatureImageRulesHintText } from '../utils/validateSignatureImage'
+import { getSignatureImageForName } from '../utils/signatures'
 import ComboInput from './ComboInput'
 import TiltCard from './TiltCard'
 import './CertificateForm.css'
@@ -64,8 +64,6 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
   const [showTagPreview, setShowTagPreview] = useState(false)
   const [certificateData, setCertificateData] = useState(null)
   const [tagData, setTagData] = useState(null)
-  const [signatureImageDataUrl, setSignatureImageDataUrl] = useState(null)
-  const [signatureImageError, setSignatureImageError] = useState(null)
   const [isRenderingCertificate, setIsRenderingCertificate] = useState(false)
   const [isRenderingTag, setIsRenderingTag] = useState(false)
   const [isDownloadingCertificate, setIsDownloadingCertificate] = useState(false)
@@ -177,23 +175,10 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     );
   };
 
-  const handleSignatureFileChange = async (event) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    if (!file) {
-      setSignatureImageDataUrl(null)
-      setSignatureImageError(null)
-      return
-    }
-    const result = await validateSignatureImageFile(file)
-    if (!result.ok) {
-      setSignatureImageError(result.error)
-      setSignatureImageDataUrl(null)
-      return
-    }
-    setSignatureImageError(null)
-    setSignatureImageDataUrl(result.dataUrl)
-  }
+  const signatureImageUrl = useMemo(
+    () => getSignatureImageForName(formData.calibratedBy),
+    [formData.calibratedBy],
+  )
 
   useEffect(() => {
     if (showCertificatePreview && certificateData && certificateCanvasRef.current) {
@@ -278,7 +263,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
   }
 
   const handlePreviewCertificate = () => {
-    setCertificateData({ ...formData, signatureImageDataUrl })
+    setCertificateData({ ...formData, signatureImageDataUrl: signatureImageUrl })
     setShowCertificatePreview(true)
   }
 
@@ -291,11 +276,6 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     e.preventDefault()
     onSubmit?.(formData)
   }
-
-  const isCalibrationSignOffSection =
-    (formType !== 'tag') &&
-    sections[currentSection]?.fields?.includes('calibratedBy') &&
-    sections[currentSection]?.fields?.includes('date');
 
   const formTitle = formType === 'certificate'
     ? 'Certificate Generator'
@@ -402,26 +382,6 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
                     </label>
                   ))}
                 </div>
-
-                {isCalibrationSignOffSection && (
-                  <div className="field-group signature-upload-group">
-                    <span>Signature image (for certificate)</span>
-                    <input
-                      type="file"
-                      accept="image/png,image/jpeg,image/jpg"
-                      onChange={handleSignatureFileChange}
-                    />
-                    <p className="signature-upload-hint">{signatureImageRulesHintText()}</p>
-                    {signatureImageError && (
-                      <p className="field-error" role="alert">
-                        {signatureImageError}
-                      </p>
-                    )}
-                    {signatureImageDataUrl && !signatureImageError && (
-                      <p className="signature-upload-ok">Signature image uploaded successfully</p>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
           )}

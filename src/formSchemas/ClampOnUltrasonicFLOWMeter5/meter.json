@@ -86,7 +86,8 @@
     },
     "model": {
       "label": "Model",
-      "placeholder": "e.g., MUF 1200"
+      "placeholder": "e.g., MUF 1200",
+      "defaultValue": "MUF 1200"
     },
     "serialNo": {
       "label": "Serial No.",
@@ -126,7 +127,8 @@
     },
     "flowTotalUnit": {
       "label": "Flow Total Unit",
-      "placeholder": "e.g., Litres"
+      "placeholder": "e.g., Litres",
+      "defaultValue": "LITERS X 10000"
     },
     "calibratedBy": {
       "label": "Calibrated By",

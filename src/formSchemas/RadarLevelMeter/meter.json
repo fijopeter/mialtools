@@ -67,8 +67,6 @@
     "calibratedBy": {
       "label": "Calibrated By",
       "placeholder": "Enter technician name",
-      "dropdown": true,
-      "options": ["Jerin Zacharia", "JERIN ZACHARIA"],
       "defaultValue": "JERIN ZACHARIA"
     },
     "date": { "label": "Date", "inputType": "date" }

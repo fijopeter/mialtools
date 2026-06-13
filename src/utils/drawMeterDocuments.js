@@ -40,7 +40,9 @@ export async function drawTag({ canvasElement, dataToRender, tagDrawConfig, left
   const ctx = canvasElement.getContext('2d');
   const SCALE = 2;
   const TAG_WIDTH = 450;
-  const TAG_HEIGHT =  320;
+  const TAG_HEIGHT = 320;
+  const BOX_MARGIN = 4;
+  const DO_NOT_REMOVE_COL_WIDTH = 28;
 
   canvasElement.width = TAG_WIDTH * SCALE;
   canvasElement.height = TAG_HEIGHT * SCALE;
@@ -52,15 +54,24 @@ export async function drawTag({ canvasElement, dataToRender, tagDrawConfig, left
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, TAG_WIDTH, TAG_HEIGHT);
 
-  const doNotRemoveX = TAG_WIDTH - 80;
-  const doNotRemoveY = 80;
-  const doNotRemoveWidth = 25;
-  const doNotRemoveHeight = TAG_HEIGHT - 140;
+  // Outer border around the whole tag: a main column for the data and a narrow
+  // right column for the "DO NOT REMOVE TAG" notice (previously a separate box).
+  const boxX = BOX_MARGIN;
+  const boxY = BOX_MARGIN;
+  const boxWidth = TAG_WIDTH - BOX_MARGIN * 2;
+  const boxHeight = TAG_HEIGHT - BOX_MARGIN * 2;
+  const dividerX = boxX + boxWidth - DO_NOT_REMOVE_COL_WIDTH;
+
   ctx.strokeStyle = '#000';
   ctx.lineWidth = 2;
-  ctx.strokeRect(doNotRemoveX, doNotRemoveY, doNotRemoveWidth, doNotRemoveHeight);
+  ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+  ctx.beginPath();
+  ctx.moveTo(dividerX, boxY);
+  ctx.lineTo(dividerX, boxY + boxHeight);
+  ctx.stroke();
+
   ctx.save();
-  ctx.translate(doNotRemoveX + doNotRemoveWidth / 2, doNotRemoveY + doNotRemoveHeight / 2);
+  ctx.translate(dividerX + DO_NOT_REMOVE_COL_WIDTH / 2, boxY + boxHeight / 2);
   ctx.rotate(-Math.PI / 2);
   ctx.fillStyle = '#000';
   ctx.font = 'bold 10px Arial';
@@ -68,15 +79,15 @@ export async function drawTag({ canvasElement, dataToRender, tagDrawConfig, left
   ctx.fillText('DO NOT REMOVE TAG', 0, 3);
   ctx.restore();
 
-  const contentLeft = 15;
-  const contentTop = 15;
-  const contentWidth = doNotRemoveX - contentLeft - 10;
-  
+  const contentLeft = boxX + 10;
+  const contentTop = boxY + 10;
+  const contentWidth = dividerX - contentLeft - 10;
+
   let currentY = contentTop + 25;
 
   ctx.textAlign = 'left';
-  
-  const logoX = TAG_WIDTH - 450;
+
+  const logoX = contentLeft;
   const logoY = 10;
   if (tagLogo) ctx.drawImage(tagLogo, logoX, logoY, 148, 60);
   ctx.fillStyle = '#0066cc';

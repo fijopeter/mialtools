@@ -25,12 +25,16 @@
     "temperatureSensor": {
       "label": "Temperature Sensor",
       "placeholder": "e.g., Clamp-On PT 1000",
-      "defaultValue": "Clamp-On PT 1000"
+      "defaultValue": "Clamp-On PT 1000",
+      "dropdown": true,
+      "options": ["Clamp-On PT 1000", "Immersion Type - PT 1000"]
     },
     "temperatureSensorRange": {
       "label": "Temperature Sensor Range",
       "placeholder": "e.g., -20 °C to +80 °C",
-      "defaultValue": "-20 °C to +80 °C"
+      "defaultValue": "-20 °C to +80 °C",
+      "dropdown": true,
+      "options": ["-20 °C to +80 °C", "-30 °C to +200 °C"]
     },
     "transducerType": {
       "label": "Transducer Type",
@@ -97,7 +101,8 @@
     },
     "model": {
       "label": "Model",
-      "placeholder": "e.g., MUF (B) 1200"
+      "placeholder": "e.g., MUF (B) 1200",
+      "defaultValue": "MUF (B) 1200"
     },
     "serialNo": {
       "label": "Serial No.",
@@ -149,7 +154,8 @@
     },
     "temperatureUnit": {
       "label": "Temperature Unit",
-      "placeholder": "e.g., °C"
+      "placeholder": "e.g., °C",
+      "defaultValue": "°C"
     },
     "calibratedBy": {
       "label": "Calibrated By",

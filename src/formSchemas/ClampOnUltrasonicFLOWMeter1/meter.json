@@ -24,7 +24,8 @@
     },
     "transducerType": {
       "label": "Transducer Type",
-      "placeholder": "e.g., CD01"
+      "placeholder": "e.g., CD01",
+      "defaultValue": "CD01"
     },
     "transducerTempRange": {
       "label": "Transducer Temperature Range",
@@ -90,7 +91,8 @@
     },
     "model": {
       "label": "Model",
-      "placeholder": "e.g., MUF 1200"
+      "placeholder": "e.g., MUF 1200",
+      "defaultValue": "MUF 1200"
     },
     "serialNo": {
       "label": "Serial No.",

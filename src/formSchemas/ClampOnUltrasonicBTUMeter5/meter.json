@@ -101,7 +101,8 @@
     },
     "model": {
       "label": "Model",
-      "placeholder": "e.g., MUF (B) 1200"
+      "placeholder": "e.g., MUF (B) 1200",
+      "defaultValue": "MUF (B) 1200"
     },
     "serialNo": {
       "label": "Serial No.",
@@ -153,7 +154,8 @@
     },
     "temperatureUnit": {
       "label": "Temperature Unit",
-      "placeholder": "e.g., °C"
+      "placeholder": "e.g., °C",
+      "defaultValue": "°C"
     },
     "calibratedBy": {
       "label": "Calibrated By",

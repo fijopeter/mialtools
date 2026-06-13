@@ -1,4 +1,5 @@
 import { getCertificateFieldKeys } from './certificateColumns.js';
+import { CALIBRATED_BY_OPTIONS } from './signatures.js';
 
 export const TAG_SECTION_TITLE = 'Additional Information needed for Tag';
 
@@ -72,11 +73,14 @@ export function mergeMeterAndTagSchemas(meterSchema, tagSchema, certificateConfi
     ...normalizedTagFieldMeta,
   };
 
-  console.log('fieldMeta:', fieldMeta);
-  console.log('normalizedMeterFieldMeta:', normalizedMeterFieldMeta);
-  console.log('normalizedTagFieldMeta:', normalizedTagFieldMeta);
+  if (fieldMeta.calibratedBy) {
+    fieldMeta.calibratedBy = {
+      ...fieldMeta.calibratedBy,
+      dropdown: true,
+      options: CALIBRATED_BY_OPTIONS,
+    };
+  }
 
-  console.log('tagSchema:', tagSchema);
   const tagSections = (tagSchema?.sections || [])
     .map((section) => ({
       ...section,

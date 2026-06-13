@@ -493,49 +493,6 @@
   box-shadow: 0 0 0 3px rgba(46, 52, 142, 0.12), var(--shadow-sm);
 }
 
-/* Signature Upload */
-.signature-upload-group {
-  padding: 18px 20px;
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 2px dashed rgba(99, 102, 241, 0.3);
-  border-radius: 14px;
-  margin-top: 8px;
-}
-
-.signature-upload-group input[type="file"] {
-  width: 100%;
-  padding: 12px;
-  border: 1.5px solid rgba(203, 213, 225, 0.7);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.6);
-  cursor: pointer;
-  margin-top: 8px;
-}
-
-.signature-upload-hint {
-  font-size: 12px;
-  color: var(--text-secondary);
-  margin: 8px 0 0;
-  padding: 0;
-}
-
-.signature-upload-ok {
-  font-size: 12px;
-  color: var(--success-color);
-  margin: 8px 0 0;
-  padding: 0;
-  font-weight: 600;
-}
-
-.field-error {
-  font-size: 12px;
-  color: var(--error-color);
-  margin: 8px 0 0;
-  padding: 0;
-}
-
 /* Modal Overlay */
 .modal-overlay {
   position: fixed;

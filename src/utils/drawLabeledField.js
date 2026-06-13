@@ -127,18 +127,18 @@ export function drawLabeledField(ctx, options) {
   ctx.fillStyle = valueColor;
 
   if (valueAreaWidth <= 8) {
-    const wrappedY = wrapText(ctx, valueText, valueX, y + lineHeight, valueAreaWidth, lineHeight);
+    const wrappedY = wrapText(ctx, valueText, x, y + lineHeight, maxWidth, lineHeight);
     if (underlineValue) {
       ctx.font = valueFont;
       ctx.strokeStyle = valueColor;
       ctx.lineWidth = 1;
-      const lines = getWrappedLines(ctx, valueText, valueAreaWidth);
+      const lines = getWrappedLines(ctx, valueText, maxWidth);
       let lineY = y + lineHeight;
       lines.forEach((lineText) => {
         const lineWidth = ctx.measureText(lineText).width;
         ctx.beginPath();
-        ctx.moveTo(valueX, lineY + 2);
-        ctx.lineTo(valueX + lineWidth, lineY + 2);
+        ctx.moveTo(x, lineY + 2);
+        ctx.lineTo(x + lineWidth, lineY + 2);
         ctx.stroke();
         lineY += lineHeight;
       });
@@ -167,8 +167,8 @@ export function drawLabeledField(ctx, options) {
       }
       line = word;
       currentY += lineHeight;
-      currentX = valueX;
-      currentMaxWidth = valueAreaWidth;
+      currentX = x;
+      currentMaxWidth = maxWidth;
     } else {
       line = testLine;
     }

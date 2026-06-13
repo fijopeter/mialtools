@@ -92,7 +92,8 @@
     },
     "model": {
       "label": "Model",
-      "placeholder": "e.g., INLINE MUF (B) 1200"
+      "placeholder": "e.g., INLINE MUF (B) 1200",
+      "defaultValue": "INLINE MUF (B) 1200"
     },
     "serialNo": {
       "label": "Serial No.",
