@@ -27,12 +27,15 @@
       "label": "Temperature Sensor",
       "placeholder": "e.g., Clamp-On PT 1000",
       "defaultValue": "Clamp-On PT 1000",
-      "disabled": true
+      "dropdown": true,
+      "options": ["Clamp-On PT 1000", "Immersion Type - PT 1000"]
     },
     "temperatureSensorRange": {
       "label": "Temperature Sensor Range",
       "placeholder": "e.g., -20 °C to +80 °C",
-      "defaultValue": "-20 °C to +80 °C"
+      "defaultValue": "-20 °C to +80 °C",
+      "dropdown": true,
+      "options": ["-20 °C to +80 °C", "-30 °C to +200 °C"]
     },
     "transducerType": {
       "label": "Transducer Type",

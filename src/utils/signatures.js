@@ -12,7 +12,7 @@ const signatureImageByKey = Object.fromEntries(
   }),
 );
 
-export const CALIBRATED_BY_OPTIONS = ['JERIN ZACHARIA'];
+export const CALIBRATED_BY_OPTIONS = ['JERIN ZACHARIA', 'SOLOMON JOSEPH'];
 
 export function getSignatureImageForName(name) {
   if (!name) return null;
