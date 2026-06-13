@@ -34,6 +34,14 @@ const IconArchive = () => (
   </svg>
 )
 
+const IconFileSpreadsheet = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <path d="M14 2v6h6"></path>
+    <path d="M8 13h8M8 17h8M8 13v4M12 13v4M16 13v4"></path>
+  </svg>
+)
+
 const IconSearchOff = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
     <circle cx="11" cy="11" r="7"></circle>
@@ -59,6 +67,7 @@ const TOOL_ICONS = {
   'certificate-gen': IconCertificate,
   'tag-gen': IconTag,
   'certificate-vault': IconArchive,
+  'datalog-converter': IconFileSpreadsheet,
 }
 
 export default function ToolsDashboard({ onOpenTool, searchQuery = '' }) {
@@ -181,7 +190,7 @@ export default function ToolsDashboard({ onOpenTool, searchQuery = '' }) {
                 {tool.locked && (
                   <div className="tool-unlock-info">
                     <p className="unlock-message">
-                      Unlocks on {new Date(tool.unlocksAt).toLocaleDateString()}
+                      {tool.unlockMessage || `Unlocks on ${new Date(tool.unlocksAt).toLocaleDateString()}`}
                     </p>
                   </div>
                 )}

@@ -42,5 +42,17 @@ export const toolsCatalog = [
     usageCount: 0,
     status: 'active',
     action: 'vault'
+  },
+  {
+    id: 'datalog-converter',
+    name: 'Datalog to Excel Converter',
+    description: 'Convert raw flow meter text/CSV log exports into a formatted Excel report with flow rate, velocity and totalizer columns',
+    category: 'Conversion',
+    locked: true,
+    lastUsed: '--',
+    usageCount: 0,
+    status: 'locked',
+    action: 'datalog-converter',
+    unlockMessage: 'Coming soon'
   }
 ]
