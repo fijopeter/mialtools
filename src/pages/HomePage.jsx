@@ -1,5 +1,6 @@
 import React from 'react'
 import { flattenMeterCatalog, categories } from '../config/meterCatalog'
+import { toolsCatalog } from '../config/toolsCatalog'
 import TiltCard from '../components/TiltCard'
 import './HomePage.css'
 
@@ -71,7 +72,7 @@ export default function HomePage({ onExploreClick }) {
   const stats = [
     { icon: IconLayers, value: meterList.length, label: 'Meter Types' },
     { icon: IconGrid, value: categories.length, label: 'Categories' },
-    { icon: IconFileText, value: '2', label: 'Document Types' },
+    { icon: IconFileText, value: toolsCatalog.length, label: 'Tools' },
     { icon: IconClock, value: '24/7', label: 'Available' },
   ]
 

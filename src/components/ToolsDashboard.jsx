@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import TiltCard from './TiltCard'
+import { toolsCatalog } from '../config/toolsCatalog'
 import './ToolsDashboard.css'
 
 const IconPackage = () => (
@@ -61,52 +62,7 @@ const TOOL_ICONS = {
 }
 
 export default function ToolsDashboard({ onOpenTool, searchQuery = '' }) {
-  const [tools] = useState([
-    {
-      id: 'both-gen',
-      name: 'Generate Certificate & Tag',
-      description: 'Generate certificates and tags together in one workflow - Perfect for complete meter documentation',
-      category: 'Generation',
-      locked: false,
-      lastUsed: '--',
-      usageCount: 0,
-      status: 'active',
-      action: 'both'
-    },
-    {
-      id: 'certificate-gen',
-      name: 'Certificate Generator',
-      description: 'Generate professional certificates for meters with detailed information and signatures',
-      category: 'Generation',
-      locked: false,
-      lastUsed: '--',
-      usageCount: 0,
-      status: 'active',
-      action: 'certificate'
-    },
-    {
-      id: 'tag-gen',
-      name: 'Tag Generator',
-      description: 'Create QR codes and RFID tags for meters with automatic encoding',
-      category: 'Generation',
-      locked: false,
-      lastUsed: '--',
-      usageCount: 0,
-      status: 'active',
-      action: 'tag'
-    },
-    {
-      id: 'certificate-vault',
-      name: 'Certificate Repository',
-      description: 'Upload certificates and tags, then search and download them by file name',
-      category: 'Management',
-      locked: false,
-      lastUsed: '--',
-      usageCount: 0,
-      status: 'active',
-      action: 'vault'
-    }
-  ])
+  const tools = toolsCatalog
 
   const categories = ['All', ...new Set(tools.map(t => t.category))]
   const [selectedCategory, setSelectedCategory] = useState(null)
