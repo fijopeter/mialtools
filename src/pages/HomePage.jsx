@@ -9,6 +9,7 @@ const meterImages = {
   'RadarLevelMeter': new URL('../images/meter/RadarLevelMeter.png', import.meta.url).href,
   'ElectromagneticBTUMeter': new URL('../images/meter/ElectromagneticBTUMeter.png', import.meta.url).href,
   'ElectromagneticFLOWMeter': new URL('../images/meter/ElectromagneticFLOWMeter.png', import.meta.url).href,
+  'IntegralElectromagneticFLOWMeter': new URL('../images/meter/ElectromagneticFLOWMeter.png', import.meta.url).href,
   'InlineUltrasonicFLOWMeter': new URL('../images/meter/InlineUltrasonicFLOWMeter.png', import.meta.url).href,
   'InlineUltrasonicBTUMeter': new URL('../images/meter/InlineUltrasonicBTUMeter.png', import.meta.url).href,
   'ClampOnUltrasonicFLOW5': new URL('../images/meter/ClampOnUltrasonicFLOW5.png', import.meta.url).href,

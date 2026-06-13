@@ -7,6 +7,8 @@ import B1Meter from '../formSchemas/ElectromagneticBTUMeter/meter.json';
 import B1Tag from '../formSchemas/ElectromagneticBTUMeter/tag.json';
 import B2Meter from '../formSchemas/ElectromagneticFLOWMeter/meter.json';
 import B2Tag from '../formSchemas/ElectromagneticFLOWMeter/tag.json';
+import B3Meter from '../formSchemas/IntegralElectromagneticFLOWMeter/meter.json';
+import B3Tag from '../formSchemas/IntegralElectromagneticFLOWMeter/tag.json';
 import C1_1Meter from '../formSchemas/InlineUltrasonicFLOWMeter/meter.json';
 import C1_1Tag from '../formSchemas/InlineUltrasonicFLOWMeter/tag.json';
 import C1_2Meter from '../formSchemas/InlineUltrasonicBTUMeter/meter.json';
@@ -25,6 +27,7 @@ import UltraSonicLevelMeterCertificate from '../certificateSchemas/UltraSonicLev
 import A2Certificate from '../certificateSchemas/RadarLevelMeter/certificate.json';
 import B1Certificate from '../certificateSchemas/ElectromagneticBTUMeter/certificate.json';
 import B2Certificate from '../certificateSchemas/ElectromagneticFLOWMeter/certificate.json';
+import B3Certificate from '../certificateSchemas/IntegralElectromagneticFLOWMeter/certificate.json';
 import C1_1Certificate from '../certificateSchemas/InlineUltrasonicFLOWMeter/certificate.json';
 import C1_2Certificate from '../certificateSchemas/InlineUltrasonicBTUMeter/certificate.json';
 import C2_1_1Certificate from '../certificateSchemas/ClampOnUltrasonicFLOWMeter5/certificate.json';
@@ -37,6 +40,7 @@ import A1TagDraw from '../tagSchemas/UltraSonicLevelMeter/tag.json';
 import A2TagDraw from '../tagSchemas/RadarLevelMeter/tag.json';
 import B1TagDraw from '../tagSchemas/ElectromagneticBTUMeter/tag.json';
 import B2TagDraw from '../tagSchemas/ElectromagneticFLOWMeter/tag.json';
+import B3TagDraw from '../tagSchemas/IntegralElectromagneticFLOWMeter/tag.json';
 import C1_1TagDraw from '../tagSchemas/InlineUltrasonicFLOWMeter/tag.json';
 import C1_2TagDraw from '../tagSchemas/InlineUltrasonicBTUMeter/tag.json';
 import C2_1_1TagDraw from '../tagSchemas/ClampOnUltrasonicFLOWMeter5/tag.json';
@@ -63,6 +67,7 @@ export const meterCatalog = [
     options: [
       { id: 'ElectromagneticBTUMeter', code: 'ElectromagneticBTUMeter', label: 'Electromagnetic BTU Meter', meterSchema: B1Meter, tagSchema: B1Tag, certificateConfig: B1Certificate, tagDrawConfig: B1TagDraw.tagDraw, description: 'Meet our MEF 2100 series inline electromagnetic flow and BTU meters.' },
       { id: 'ElectromagneticFLOWMeter', code: 'ElectromagneticFLOWMeter', label: 'Electromagnetic FLOW Meter', meterSchema: B2Meter, tagSchema: B2Tag, certificateConfig: B2Certificate, tagDrawConfig: B2TagDraw.tagDraw, description: 'Inline electromagnetic flow meters utilizing Faraday\'s Law of Electromagnetic Induction.' },
+      { id: 'IntegralElectromagneticFLOWMeter', code: 'IntegralElectromagneticFLOWMeter', label: 'Integral Electromagnetic FLOW Meter', meterSchema: B3Meter, tagSchema: B3Tag, certificateConfig: B3Certificate, tagDrawConfig: B3TagDraw.tagDraw, description: 'Integral-mount electromagnetic flow meters utilizing Faraday\'s Law of Electromagnetic Induction.' },
     ],
   },
   {

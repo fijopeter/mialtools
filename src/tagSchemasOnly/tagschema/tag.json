@@ -28,6 +28,13 @@
         ]
     },
     {
+        "id" : "IntegralElectromagneticFLOWMeter",
+        "title": "TAG INFORMATIONS",
+        "fields": [
+           "meterTag", "model", "serialNo", "pipeData", "analogOutput", "communicationInterface", "baudRate", "modulusAddress", "analogRange", "calibratedBy", "date"
+        ]
+    },
+    {
         "id" : "InlineUltrasonicFLOWMeter",
         "title": "TAG INFORMATIONS",
         "fields": [

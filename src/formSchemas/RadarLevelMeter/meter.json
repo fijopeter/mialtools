@@ -25,11 +25,11 @@
       "options": ["IP65", "IP67", "IP68"],
       "defaultValue": "IP65"
     },
-    "Explosion Proof / ABS": {
-      "label": "Explosion Proof / ABS",
+    "transmitterType": {
+      "label": "Transmitter Type",
       "placeholder": "e.g., ABS",
       "dropdown": true,
-      "options": ["ABS"],
+      "options": ["ABS", "Aluminium", "Explosion Proof"],
       "defaultValue": "ABS"
     },
     "measuringRange": { "label": "Measuring Range", "placeholder": "e.g., 0 - 4 m", "defaultValue": "0 - 4 m" },
@@ -79,7 +79,7 @@
         "accuracy",
         "transmitterUnitProtection",
         "sensorProtection",
-        "Explosion Proof / ABS",
+        "transmitterType",
         "measuringRange",
         "setRange",
         "blindSpot",

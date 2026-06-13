@@ -18,12 +18,30 @@ const FORM_TITLES = {
 
 export default function App() {
   const { session, user, loading, isConfigured, isApproved, signOut } = useAuth()
-  const [currentPage, setCurrentPage] = useState('home') // home is landing page
+  const [currentPage, setCurrentPage] = useState(() => {
+    const savedPage = sessionStorage.getItem('mial_currentPage')
+    const savedFormType = sessionStorage.getItem('mial_formType')
+    if (savedPage === 'form' && !savedFormType) return 'tools'
+    return savedPage || 'home'
+  }) // home is landing page
   const [searchQuery, setSearchQuery] = useState('')
   const [meterForForm, setMeterForForm] = useState(null)
-  const [formType, setFormType] = useState(null) // 'certificate', 'tag', or 'both'
+  const [formType, setFormType] = useState(() => sessionStorage.getItem('mial_formType') || null) // 'certificate', 'tag', or 'both'
   const [pageLoaderState, setPageLoaderState] = useState('')
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  // Persist navigation so a background-tab reload returns to the same page/form
+  useEffect(() => {
+    sessionStorage.setItem('mial_currentPage', currentPage)
+  }, [currentPage])
+
+  useEffect(() => {
+    if (formType) {
+      sessionStorage.setItem('mial_formType', formType)
+    } else {
+      sessionStorage.removeItem('mial_formType')
+    }
+  }, [formType])
 
   // Brief top progress bar on every page switch for consistent loading feedback
   useEffect(() => {

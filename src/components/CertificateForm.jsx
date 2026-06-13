@@ -15,6 +15,25 @@ const WATERMARK_LOGO = new URL('../images/Mlogo.jpeg', import.meta.url).href;
 const LEFT_LOGO = new URL('../images/fullLogo.jpg', import.meta.url).href;
 const RIGHT_LOGO = new URL('../images/iso.jpg', import.meta.url).href;
 
+const FORM_STATE_STORAGE_KEY = 'mial_certificate_form_state'
+
+const readSavedFormState = () => {
+  try {
+    const raw = sessionStorage.getItem(FORM_STATE_STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+const clearSavedFormState = () => {
+  try {
+    sessionStorage.removeItem(FORM_STATE_STORAGE_KEY)
+  } catch {
+    // ignore storage errors
+  }
+}
+
 const loadImage = (src) =>
   new Promise((resolve) => {
     const img = new Image();
@@ -57,9 +76,20 @@ const IconArrowRight = () => (
 )
 
 export default function CertificateForm({ meter, formType = 'both', onBack, onSubmit }) {
-  const [selectedMeter, setSelectedMeter] = useState(meter)
+  const [savedFormState] = useState(() => {
+    const saved = readSavedFormState()
+    return saved && saved.formType === formType ? saved : null
+  })
+
+  const [selectedMeter, setSelectedMeter] = useState(() => {
+    if (meter) return meter
+    if (savedFormState?.meterId) {
+      return flattenMeterCatalog().find((m) => m.id === savedFormState.meterId) || null
+    }
+    return null
+  })
   const [searchQuery, setSearchQuery] = useState('')
-  const [currentSection, setCurrentSection] = useState(0)
+  const [currentSection, setCurrentSection] = useState(() => savedFormState?.currentSection ?? 0)
   const [showCertificatePreview, setShowCertificatePreview] = useState(false)
   const [showTagPreview, setShowTagPreview] = useState(false)
   const [certificateData, setCertificateData] = useState(null)
@@ -109,12 +139,39 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     return { fieldMeta: merged.fieldMeta, sections: filteredSections }
   }, [selectedMeter, formType])
 
-  const [formData, setFormData] = useState(() => buildInitialFormData(fieldMeta))
+  const [formData, setFormData] = useState(() => {
+    const initial = buildInitialFormData(fieldMeta)
+    return savedFormState?.formData ? { ...initial, ...savedFormState.formData } : initial
+  })
+
+  // Only reset the form when fieldMeta actually changes (i.e. the user picked a
+  // different meter) — not on initial mount, even under StrictMode's double-effect.
+  const prevFieldMetaRef = useRef(fieldMeta)
 
   useEffect(() => {
+    if (prevFieldMetaRef.current === fieldMeta) return
+    prevFieldMetaRef.current = fieldMeta
     setFormData(buildInitialFormData(fieldMeta))
     setCurrentSection(0)
   }, [fieldMeta])
+
+  // Persist form progress so a background-tab reload doesn't wipe out what the user typed
+  useEffect(() => {
+    if (!selectedMeter) {
+      clearSavedFormState()
+      return
+    }
+    try {
+      sessionStorage.setItem(FORM_STATE_STORAGE_KEY, JSON.stringify({
+        formType,
+        meterId: selectedMeter.id,
+        currentSection,
+        formData,
+      }))
+    } catch {
+      // ignore storage errors
+    }
+  }, [selectedMeter, formType, currentSection, formData])
 
   const handleSelectMeter = (selectedMeterOption) => {
     setSelectedMeter(selectedMeterOption)
@@ -241,8 +298,12 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     if (!tagCanvasRef.current || !tagData) return;
     setIsDownloadingTag(true)
     setTimeout(() => {
-      const tagPdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [150, 90] });
-      tagPdf.addImage(tagCanvasRef.current.toDataURL('image/png'), 'PNG', 0, 0, 150, 90);
+      const canvas = tagCanvasRef.current
+      const hasOutputsBox = !!selectedMeter?.tagDrawConfig?.outputsBox
+      const pdfHeight = 90
+      const pdfWidth = hasOutputsBox ? pdfHeight * (canvas.width / canvas.height) : 150
+      const tagPdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [pdfWidth, pdfHeight] });
+      tagPdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
       tagPdf.save(`${tagData.serialNo || 'file'}-tag.pdf`);
       setIsDownloadingTag(false)
     }, 0)
@@ -258,6 +319,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     if (currentSection > 0) {
       setCurrentSection(currentSection - 1)
     } else {
+      clearSavedFormState()
       onBack?.()
     }
   }
@@ -274,6 +336,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
 
   const handleSubmit = (e) => {
     e.preventDefault()
+    clearSavedFormState()
     onSubmit?.(formData)
   }
 
@@ -286,7 +349,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
   return (
     <div className="form-container">
       <div className="form-header">
-        <button className="form-back" onClick={onBack} title="Go back">
+        <button className="form-back" onClick={() => { clearSavedFormState(); onBack?.() }} title="Go back">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M19 12H5M12 19l-7-7 7-7"></path>
           </svg>

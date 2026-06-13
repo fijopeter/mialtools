@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './Sidebar.css'
 import mlogo from '../images/Mlogo-nobg.png'
+import fullLogo from '../images/fullLogo-nobg.png'
 
 const ITEM_HEIGHT = 48
 
@@ -79,8 +80,11 @@ export default function Sidebar({ currentPage, onNavigate, collapsed, onToggleCo
         }}
         title="MIAL Home"
       >
-        <img src={mlogo} alt="MIAL" className="sidebar__logo-img" />
-        <span className="sidebar__logo-text">MIAL</span>
+        {collapsed ? (
+          <img src={mlogo} alt="MIAL" className="sidebar__logo-img" />
+        ) : (
+          <img src={fullLogo} alt="MIAL Instruments" className="sidebar__logo-img sidebar__logo-img--full" />
+        )}
       </div>
 
       <nav className="sidebar__nav">

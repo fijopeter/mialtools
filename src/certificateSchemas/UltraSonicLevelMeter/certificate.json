@@ -15,7 +15,7 @@
     { "field": "accuracy" },
     { "field": "transmitterUnitProtection" },
     { "field": "sensorProtection" },
-    { "field": "Explosion Proof / ABS" },
+    { "field": "transmitterType" },
     { "field": "measuringRange" },
     { "field": "setRange" },
     { "field": "blindSpot" },

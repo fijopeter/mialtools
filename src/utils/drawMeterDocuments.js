@@ -1,6 +1,7 @@
 import { formatStoredDateForDisplay } from './formatStoredDateForDisplay.js';
 import { getFieldValue } from './mergeSchemas.js';
 import { drawLabeledField } from './drawLabeledField.js';
+import outputsDiagramSrc from '../images/integralFlowOutputsDiagram.png';
 
 const TAG_FIELD_OPTIONS = {
   labelFont: '12px Arial',
@@ -34,6 +35,11 @@ function drawTagField(ctx, label, value, x, y, maxWidth) {
   });
 }
 
+// Gap between the tag and the static wiring/outputs reference diagram drawn
+// alongside it for meters whose tagDraw config sets `outputsBox: true`
+// (currently only the Integral Electromagnetic FLOW Meter).
+const OUTPUTS_BOX_GAP = 16;
+
 export async function drawTag({ canvasElement, dataToRender, tagDrawConfig, leftLogo, loadImage }) {
   if (!canvasElement || !dataToRender) return;
 
@@ -44,6 +50,8 @@ export async function drawTag({ canvasElement, dataToRender, tagDrawConfig, left
   const BOTTOM_PADDING = 16;
 
   const tagLogo = await loadImage(leftLogo);
+  const hasOutputsBox = !!tagDrawConfig.outputsBox;
+  const outputsDiagram = hasOutputsBox ? await loadImage(outputsDiagramSrc) : null;
 
   const boxWidth = TAG_WIDTH - BOX_MARGIN * 2;
   const dividerX = BOX_MARGIN + boxWidth - DO_NOT_REMOVE_COL_WIDTH;
@@ -175,21 +183,25 @@ export async function drawTag({ canvasElement, dataToRender, tagDrawConfig, left
   const TAG_HEIGHT = Math.ceil(contentBottomY) + BOTTOM_PADDING;
 
   // Pass 2: size the real canvas to fit and draw the border, side notice and content.
-  canvasElement.width = TAG_WIDTH * SCALE;
+  const boxHeight = TAG_HEIGHT - BOX_MARGIN * 2;
+  const outputsDiagramWidth = outputsDiagram
+    ? boxHeight * (outputsDiagram.width / outputsDiagram.height)
+    : 0;
+  const totalWidth = TAG_WIDTH + (hasOutputsBox ? OUTPUTS_BOX_GAP + outputsDiagramWidth : 0);
+  canvasElement.width = totalWidth * SCALE;
   canvasElement.height = TAG_HEIGHT * SCALE;
-  canvasElement.style.width = `${TAG_WIDTH}px`;
+  canvasElement.style.width = `${totalWidth}px`;
   canvasElement.style.height = `${TAG_HEIGHT}px`;
   const ctx = canvasElement.getContext('2d');
   ctx.scale(SCALE, SCALE);
 
   ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, TAG_WIDTH, TAG_HEIGHT);
+  ctx.fillRect(0, 0, totalWidth, TAG_HEIGHT);
 
   // Outer border around the whole tag: a main column for the data and a narrow
   // right column for the "DO NOT REMOVE TAG" notice (previously a separate box).
   const boxX = BOX_MARGIN;
   const boxY = BOX_MARGIN;
-  const boxHeight = TAG_HEIGHT - BOX_MARGIN * 2;
 
   ctx.strokeStyle = '#000';
   ctx.lineWidth = 2;
@@ -209,4 +221,8 @@ export async function drawTag({ canvasElement, dataToRender, tagDrawConfig, left
   ctx.restore();
 
   renderContent(ctx);
+
+  if (outputsDiagram) {
+    ctx.drawImage(outputsDiagram, TAG_WIDTH + OUTPUTS_BOX_GAP, boxY, outputsDiagramWidth, boxHeight);
+  }
 }

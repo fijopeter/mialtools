@@ -1,0 +1,100 @@
+{
+  "id": "B3",
+  "label": "Integral Electromagnetic FLOW Meter",
+  "certificateType": "integral-electromagnetic-flow",
+  "fieldMeta": {
+    "fluid": { "label": "Fluid", "placeholder": "e.g., Water", "defaultValue": "Water" },
+    "accuracy": { "label": "Accuracy", "placeholder": "e.g., ± 0.5%", "defaultValue": "± 0.5%" },
+    "pipeSize": { "label": "Pipe Size", "placeholder": "e.g., DN 400", "defaultValue": "DN 400" },
+    "pipeSchedule": { "label": "Pipe Schedule", "placeholder": "e.g., SCH 40", "defaultValue": "SCH 40" },
+    "nominalPressure": { "label": "Nominal Pressure", "placeholder": "e.g., 1.6 MPa", "defaultValue": "1.6 MPa", "dropdown": true, "options": ["1.6 MPa", "2.5 MPa"] },
+    "electrode": { "label": "Electrode", "placeholder": "e.g., SS316L", "defaultValue": "SS316L" },
+    "powerSupply": { "label": "Power Supply", "placeholder": "e.g., 24 VDC", "defaultValue": "24 VDC", "disabled": true },
+    "analogOutput": { "label": "Analog Output", "placeholder": "e.g., 4–20 mA", "defaultValue": "4–20 mA" },
+    "analogRange": { "label": "Analog Range", "placeholder": "e.g., 0 – 435 L/s" },
+    "applicationType": { "label": "Application Type", "placeholder": "e.g., Chilled Water", "defaultValue": "Chilled Water" },
+    "protection": { "label": "Protection", "placeholder": "e.g., IP68", "defaultValue": "IP68" },
+    "pipeType": { "label": "Pipe Type", "placeholder": "e.g., CS", "defaultValue": "CS" },
+    "linerMaterial": { "label": "Liner Material", "placeholder": "e.g., PTFE", "defaultValue": "PTFE", "disabled": true },
+    "measuringTube": { "label": "Measuring Tube", "placeholder": "e.g., 304SS", "defaultValue": "304SS", "disabled": true },
+    "flowTubeTemperature": {
+      "label": "Flow Tube Temperature",
+      "placeholder": "e.g., -10 … +120 °C",
+      "defaultValue": "-10 … +120 °C"
+    },
+    "flangeType": { "label": "Flange Type", "placeholder": "e.g., ANSI CLASS 150", "defaultValue": "ANSI CLASS 150" },
+    "customerKFactor": { "label": "Customer K Factor", "placeholder": "e.g., 1.2770" },
+    "model": { "label": "Model", "placeholder": "e.g., MEF 2100", "defaultValue": "MEF 2100" },
+    "serialNo": { "label": "Serial No.", "placeholder": "e.g., 23100343" },
+    "measuringTechnology": {
+      "label": "Measuring Technology",
+      "placeholder": "e.g., Electromagnetic",
+      "defaultValue": "Electromagnetic", "disabled": true
+    },
+    "meterTag": {
+      "label": "Meter Tag",
+      "placeholder": "e.g., FM-01 JOHNSON CONTROLS"
+    },
+    "communicationInterface": {
+      "label": "Communication Interface",
+      "placeholder": "e.g., Modbus RS-485",
+      "defaultValue": "Modbus RS-485"
+    },
+    "address": { "label": "Address", "placeholder": "e.g., 01" },
+    "baudRate": { "label": "Baud Rate", "placeholder": "e.g., 9600", "defaultValue": "9600" },
+    "parity": { "label": "Parity", "placeholder": "e.g., None", "defaultValue": "None" },
+    "flowRateUnit": { "label": "Flow Rate", "placeholder": "e.g., L/s", "defaultValue": "L/s" },
+    "flowTotalUnit": { "label": "Flow Total", "placeholder": "e.g., Litres", "defaultValue": "Litres" },
+    "calibratedBy": {
+      "label": "Calibrated By",
+      "placeholder": "Enter technician name",
+      "defaultValue": "JERIN ZACHARIA"
+    },
+    "date": { "label": "Date", "inputType": "date" }
+  },
+  "sections": [
+    {
+      "title": "CONFIGURATION DATA",
+      "fields": [
+        "fluid",
+        "accuracy",
+        "pipeSize",
+        "pipeSchedule",
+        "nominalPressure",
+        "electrode",
+        "powerSupply",
+        "analogOutput",
+        "analogRange",
+        "applicationType",
+        "protection",
+        "pipeType",
+        "linerMaterial",
+        "measuringTube",
+        "flowTubeTemperature",
+        "flangeType",
+        "customerKFactor"
+      ]
+    },
+    {
+      "title": "FLOW METER INFORMATION",
+      "fields": [
+        "model",
+        "serialNo",
+        "measuringTechnology",
+        "meterTag",
+        "communicationInterface",
+        "address",
+        "baudRate",
+        "parity"
+      ]
+    },
+    {
+      "title": "ENGINEERING UNITS",
+      "fields": ["flowRateUnit", "flowTotalUnit"]
+    },
+    {
+      "title": "CALIBRATION SIGN-OFF",
+      "fields": ["calibratedBy", "date"]
+    }
+  ]
+}
