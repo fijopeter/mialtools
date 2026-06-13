@@ -75,6 +75,14 @@ const IconArrowRight = () => (
   </svg>
 )
 
+const IconHome = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M3 11l9-8 9 8"></path>
+    <path d="M5 10v10h14V10"></path>
+    <path d="M9 20v-6h6v6"></path>
+  </svg>
+)
+
 export default function CertificateForm({ meter, formType = 'both', onBack, onSubmit }) {
   const [savedFormState] = useState(() => {
     const saved = readSavedFormState()
@@ -315,6 +323,13 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     }
   }
 
+  const handleBackToMeterSelection = () => {
+    clearSavedFormState()
+    setSelectedMeter(null)
+    setCurrentSection(0)
+    setSearchQuery('')
+  }
+
   const handlePrev = () => {
     if (currentSection > 0) {
       setCurrentSection(currentSection - 1)
@@ -355,25 +370,32 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
           </svg>
         </button>
         <h2>{formTitle}{selectedMeter && ` - ${selectedMeter.label}`}</h2>
-        {selectedMeter && sections.length > 1 && (
-          <div className="form-progress">
-            {sections.map((_, idx) => (
-              <React.Fragment key={idx}>
-                <div
-                  className={`progress-step ${idx < currentSection ? 'completed' : ''} ${idx === currentSection ? 'active' : ''}`}
-                  title={sections[idx]?.title}
-                >
-                  <span className="progress-step-circle">
-                    {idx < currentSection ? <IconCheck /> : idx + 1}
-                  </span>
-                </div>
-                {idx < sections.length - 1 && (
-                  <div className={`progress-line ${idx < currentSection ? 'completed' : ''}`}></div>
-                )}
-              </React.Fragment>
-            ))}
-          </div>
-        )}
+        <div className="form-header-spacer">
+          {selectedMeter && sections.length > 1 && (
+            <div className="form-progress">
+              {sections.map((_, idx) => (
+                <React.Fragment key={idx}>
+                  <div
+                    className={`progress-step ${idx < currentSection ? 'completed' : ''} ${idx === currentSection ? 'active' : ''}`}
+                    title={sections[idx]?.title}
+                  >
+                    <span className="progress-step-circle">
+                      {idx < currentSection ? <IconCheck /> : idx + 1}
+                    </span>
+                  </div>
+                  {idx < sections.length - 1 && (
+                    <div className={`progress-line ${idx < currentSection ? 'completed' : ''}`}></div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+          )}
+          {selectedMeter && (
+            <button className="form-home" onClick={handleBackToMeterSelection} title="Back to meter selection">
+              <IconHome />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Meter Selection Step */}
