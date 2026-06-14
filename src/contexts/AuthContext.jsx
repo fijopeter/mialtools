@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
       return
     }
     setProfileLoading(true)
-    const { data } = await supabase.from('profiles').select('approved, full_name, email').eq('id', userId).maybeSingle()
+    const { data } = await supabase.from('profiles').select('approved, full_name, email, allowed_tools').eq('id', userId).maybeSingle()
     setProfile(data || null)
     setProfileLoading(false)
   }
@@ -59,12 +59,18 @@ export function AuthProvider({ children }) {
     await supabase.auth.signOut()
   }
 
+  // null/undefined allowed_tools means unrestricted access (default for all users)
+  const allowedTools = profile?.allowed_tools ?? null
+  const hasToolAccess = (toolId) => allowedTools === null || allowedTools.includes(toolId)
+
   const value = {
     session,
     user: session?.user ?? null,
     loading: loading || profileLoading,
     isApproved: profile?.approved === true,
     isConfigured: isSupabaseConfigured,
+    allowedTools,
+    hasToolAccess,
     signIn,
     signUp,
     signOut,

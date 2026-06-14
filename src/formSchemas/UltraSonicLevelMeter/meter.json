@@ -1,6 +1,6 @@
 {
   "id": "A1",
-  "label": "Ultra Sonic Level Meter",
+  "label": "Ultrasonic Level Meter",
   "certificateType": "level",
   "fieldMeta": {
     "applicationFluid": { "label": "Application-Fluid", "placeholder": "e.g., Diesel", "defaultValue": "Diesel" },
@@ -29,7 +29,7 @@
       "label": "Transmitter Type",
       "placeholder": "e.g., ABS",
       "dropdown": true,
-      "options": ["ABS", "Aluminium", "Explosion Proof"],
+      "options": ["ABS", "Aluminium", "Explosion Proof (Aluminium)"],
       "defaultValue": "ABS"
     },
     "measuringRange": { "label": "Measuring Range", "placeholder": "e.g., 0 - 4 m", "defaultValue": "0 - 4 m" },
@@ -42,6 +42,7 @@
       "options": ["Integral", "Remote", "Sensor without Display"],
       "defaultValue": "Integral"
     },
+    "cableLength": { "label": "Cable Length", "placeholder": "e.g., 10m" },
     "analogOutput": { "label": "Analog Output", "placeholder": "e.g., 4-20 mA", "defaultValue": "4 - 20 mA" },
     "temperature": {
       "label": "Temperature",
@@ -84,6 +85,7 @@
         "setRange",
         "blindSpot",
         "displayType",
+        "cableLength",
         "analogOutput",
         "temperature",
         "powerSupply",

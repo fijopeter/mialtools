@@ -1,0 +1,60 @@
+.suggestion-root {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+@keyframes suggestionPopoverEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.suggestion-popover {
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  top: calc(100% + 8px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 14px;
+  box-shadow: var(--shadow-lg);
+  padding: 8px;
+  max-height: 240px;
+  overflow: auto;
+  transform-origin: top center;
+  animation: suggestionPopoverEnter 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.suggestion-option {
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-primary);
+  transition: all var(--transition-fast);
+}
+
+.suggestion-option:hover {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 600;
+  transform: translateX(2px);
+}
+
+.suggestion-option:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: -2px;
+}

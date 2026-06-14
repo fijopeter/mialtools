@@ -217,7 +217,82 @@ their `email`, and toggle `approved` to `true` (or run
 in the SQL Editor). Next time they sign in (or refresh the page), they get
 full access. Until then, signed-in users see a "pending approval" screen.
 
-## 7. Restart the dev server
+## 7. Restrict which tools each user can see
+
+By default every approved user sees **all** tools on the Tools page. To limit
+a specific person to a subset, add an `allowed_tools` column to `profiles`:
+
+```sql
+alter table public.profiles add column allowed_tools text[];
+```
+
+- `allowed_tools is null` (the default) → full access, nothing changes for
+  existing users.
+- Set it to an array of tool IDs to restrict that user to only those tools.
+
+Current tool IDs (from `src/config/toolsCatalog.js`):
+
+| Tool ID             | Name                        |
+| ------------------- | --------------------------- |
+| `both-gen`          | Generate Certificate & Tag   |
+| `certificate-gen`   | Certificate Generator        |
+| `tag-gen`           | Tag Generator                |
+| `certificate-vault` | Certificate Repository       |
+| `datalog-converter` | Datalog to Excel Converter   |
+
+**To restrict someone**, e.g. give a user access to only the certificate
+generator:
+
+```sql
+update public.profiles
+set allowed_tools = array['certificate-gen']
+where email = 'person@example.com';
+```
+
+**To restore full access:**
+
+```sql
+update public.profiles set allowed_tools = null where email = 'person@example.com';
+```
+
+Restricted tools are hidden from the Tools page and the sidebar, and direct
+navigation to them is blocked — so this is just a `profiles` table edit, no
+app changes required. The user sees the change next time they sign in or
+refresh the page.
+
+## 8. Enable field-value suggestions (autocomplete)
+
+While filling out a certificate/tag form, typing a double space after some
+text (e.g. `24 vd  `) shows a dropdown of matching values entered previously
+in that field (e.g. `24 VDC`) — click one to use it. To enable this, go to
+**SQL Editor** and run:
+
+```sql
+-- Remember distinct values entered per form field for autocomplete suggestions
+create table public.field_suggestions (
+  id uuid primary key default gen_random_uuid(),
+  field_key text not null,
+  value text not null,
+  last_used_at timestamptz not null default now(),
+  unique (field_key, value)
+);
+
+alter table public.field_suggestions enable row level security;
+
+create policy "field_suggestions_select" on public.field_suggestions
+  for select to authenticated using (public.is_approved());
+
+create policy "field_suggestions_upsert" on public.field_suggestions
+  for insert to authenticated with check (public.is_approved());
+
+create policy "field_suggestions_update" on public.field_suggestions
+  for update to authenticated using (public.is_approved()) with check (public.is_approved());
+```
+
+> This table only stores short text values (e.g. `"24 VDC"`), so it stays
+> tiny — a non-issue on the free plan's 500 MB database limit.
+
+## 9. Restart the dev server
 
 After saving `.env`, restart `npm run dev` so Vite picks up the new environment
 variables.

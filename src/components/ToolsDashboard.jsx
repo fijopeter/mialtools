@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import TiltCard from './TiltCard'
 import { toolsCatalog } from '../config/toolsCatalog'
+import { useAuth } from '../contexts/AuthContext'
 import './ToolsDashboard.css'
 
 const IconPackage = () => (
@@ -71,7 +72,8 @@ const TOOL_ICONS = {
 }
 
 export default function ToolsDashboard({ onOpenTool, searchQuery = '' }) {
-  const tools = toolsCatalog
+  const { hasToolAccess } = useAuth()
+  const tools = toolsCatalog.filter(t => hasToolAccess(t.id))
 
   const categories = ['All', ...new Set(tools.map(t => t.category))]
   const [selectedCategory, setSelectedCategory] = useState(null)

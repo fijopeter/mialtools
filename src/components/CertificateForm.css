@@ -523,6 +523,49 @@
   box-shadow: 0 0 0 3px rgba(46, 52, 142, 0.12), var(--shadow-sm);
 }
 
+/* Signature Upload */
+.signature-upload-group {
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 2px dashed rgba(99, 102, 241, 0.3);
+  border-radius: 14px;
+  margin-top: 8px;
+}
+
+.signature-upload-group input[type="file"] {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid rgba(203, 213, 225, 0.7);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.signature-upload-hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.signature-upload-ok {
+  font-size: 12px;
+  color: var(--success-color);
+  margin: 8px 0 0;
+  padding: 0;
+  font-weight: 600;
+}
+
+.field-error {
+  font-size: 12px;
+  color: var(--error-color);
+  margin: 8px 0 0;
+  padding: 0;
+}
+
 /* Modal Overlay */
 .modal-overlay {
   position: fixed;
@@ -622,6 +665,7 @@
 
 .modal-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   justify-content: flex-end;
   padding-top: 16px;
@@ -630,6 +674,27 @@
 
 .modal-actions .btn {
   min-width: 140px;
+}
+
+.upload-status-banner {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.upload-status-banner--success {
+  background: rgba(16, 185, 129, 0.08);
+  color: var(--success-color);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.upload-status-banner--error {
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--error-color);
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 /* Animations */

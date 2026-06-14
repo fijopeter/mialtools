@@ -41,7 +41,7 @@
       "defaultValue": "-10 … +120 °C", "disabled": true
     },
     "flangeType": { "label": "Flange Type", "placeholder": "e.g., ANSI CLASS 150", "defaultValue": "ANSI CLASS 150" },
-    "customerKFactor": { "label": "Customer K Factor", "placeholder": "e.g., 1.44570", "defaultValue": "" },
+    "customerKFactor": { "label": "K Factor", "placeholder": "e.g., 1.44570", "defaultValue": "" },
     "analogRange": { "label": "Analog Range", "placeholder": "e.g., 0 – 70 L/s", "defaultValue": "" },
     "model": { "label": "Model", "placeholder": "e.g., MEF (B) 2100", "defaultValue": "MEF (B) 2100" },
     "serialNo": { "label": "Serial No.", "placeholder": "e.g., M2112250396" },

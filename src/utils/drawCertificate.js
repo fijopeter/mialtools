@@ -61,10 +61,9 @@ function drawCommunicationBlock(ctx, fields, certificateData, x, y, blockWidth) 
 
   if (!hasComm) return y;
 
-  const boxWidth = blockWidth;
   const padding = 5;
   const lineHeight = 10;
-  const maxBoxContentWidth = boxWidth - (padding * 2);
+  const maxBoxContentWidth = blockWidth - (padding * 2);
 
   // Prepare the text with space between label and value
   ctx.font = '15px times new roman';
@@ -74,7 +73,11 @@ function drawCommunicationBlock(ctx, fields, certificateData, x, y, blockWidth) 
 
   // Get wrapped lines with proper width
   const lines = getWrappedLines(ctx, fullText, maxBoxContentWidth);
-  
+
+  // Size the box to fit the widest line instead of the full column width
+  const contentWidth = Math.max(...lines.map((line) => ctx.measureText(line).width));
+  const boxWidth = Math.min(blockWidth, contentWidth + (padding * 2));
+
   // Calculate box height based on number of lines
   const boxHeight = (lines.length * lineHeight) + (padding * 2);
 

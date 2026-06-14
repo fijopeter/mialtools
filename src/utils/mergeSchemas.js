@@ -1,5 +1,6 @@
 import { getCertificateFieldKeys } from './certificateColumns.js';
 import { CALIBRATED_BY_OPTIONS } from './signatures.js';
+import { todayIsoDate } from './fieldDefaults.js';
 
 export const TAG_SECTION_TITLE = 'Additional Information needed for Tag';
 
@@ -21,6 +22,9 @@ export function resolveFieldDefault(meta) {
   if (!meta) return '';
   if (meta.defaultValue !== undefined && meta.defaultValue !== null && String(meta.defaultValue).trim() !== '') {
     return meta.defaultValue;
+  }
+  if (meta.inputType === 'date') {
+    return todayIsoDate();
   }
   return '';
 }

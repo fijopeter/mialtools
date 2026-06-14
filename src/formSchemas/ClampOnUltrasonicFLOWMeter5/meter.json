@@ -81,7 +81,7 @@
       "placeholder": "e.g., 0.7 mm"
     },
     "customerKFactor": {
-      "label": "Customer K Factor",
+      "label": "K Factor",
       "placeholder": "e.g., 1.044"
     },
     "model": {

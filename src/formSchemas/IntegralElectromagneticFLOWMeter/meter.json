@@ -23,7 +23,7 @@
       "defaultValue": "-10 … +120 °C"
     },
     "flangeType": { "label": "Flange Type", "placeholder": "e.g., ANSI CLASS 150", "defaultValue": "ANSI CLASS 150" },
-    "customerKFactor": { "label": "Customer K Factor", "placeholder": "e.g., 1.2770" },
+    "customerKFactor": { "label": "K Factor", "placeholder": "e.g., 1.2770" },
     "model": { "label": "Model", "placeholder": "e.g., MEF 2100", "defaultValue": "MEF 2100" },
     "serialNo": { "label": "Serial No.", "placeholder": "e.g., 23100343" },
     "measuringTechnology": {

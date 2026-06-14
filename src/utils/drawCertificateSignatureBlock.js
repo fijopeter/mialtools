@@ -1,3 +1,5 @@
+import { stripWhiteBackground } from './stripWhiteBackground.js';
+
 /**
  * Draws the certificate footer signature area: image above the line (left), date (right);
  * below the line: signatory name (left), "Date of Calibration" label (right).
@@ -27,7 +29,8 @@ export async function drawCertificateSignatureBlock(ctx, {
   }
 
   const leftMidX = W / 2 - 180;
-  const sigImg = signatureImageDataUrl ? await loadImage(signatureImageDataUrl) : null;
+  const sigImgRaw = signatureImageDataUrl ? await loadImage(signatureImageDataUrl) : null;
+  const sigImg = stripWhiteBackground(sigImgRaw);
   if (sigImg) {
     const maxW = 220;
     const maxH = 52;

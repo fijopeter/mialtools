@@ -4,10 +4,12 @@ import Topbar from './components/Topbar'
 import CertificateForm from './components/CertificateForm'
 import ToolsDashboard from './components/ToolsDashboard'
 import CertificateVault from './components/CertificateVault'
+import DataLogConverter from './components/DataLogConverter'
 import AuthPage from './components/AuthPage'
 import PendingApprovalPage from './components/PendingApprovalPage'
 import HomePage from './pages/HomePage'
 import { useAuth, displayName } from './contexts/AuthContext'
+import { toolsCatalog } from './config/toolsCatalog'
 import './App.css'
 
 const FORM_TITLES = {
@@ -16,8 +18,16 @@ const FORM_TITLES = {
   both: { title: 'Generate Certificate & Tags', subtitle: 'Create a certificate and tags together for a selected meter' },
 }
 
+// Maps non-form pages to the toolsCatalog id that gates access to them
+const PAGE_TOOL_IDS = {
+  vault: 'certificate-vault',
+  'datalog-converter': 'datalog-converter',
+}
+
+const toolIdForAction = (action) => toolsCatalog.find((t) => t.action === action)?.id
+
 export default function App() {
-  const { session, user, loading, isConfigured, isApproved, signOut } = useAuth()
+  const { session, user, loading, isConfigured, isApproved, hasToolAccess, signOut } = useAuth()
   const [currentPage, setCurrentPage] = useState(() => {
     const savedPage = sessionStorage.getItem('mial_currentPage')
     const savedFormType = sessionStorage.getItem('mial_formType')
@@ -42,6 +52,17 @@ export default function App() {
       sessionStorage.removeItem('mial_formType')
     }
   }, [formType])
+
+  // Redirect away from a page if the signed-in user no longer has access to its tool
+  useEffect(() => {
+    if (loading) return
+    const toolId = currentPage === 'form' ? toolIdForAction(formType) : PAGE_TOOL_IDS[currentPage]
+    if (toolId && !hasToolAccess(toolId)) {
+      setCurrentPage('tools')
+      setFormType(null)
+      setMeterForForm(null)
+    }
+  }, [currentPage, formType, loading, hasToolAccess])
 
   // Brief top progress bar on every page switch for consistent loading feedback
   useEffect(() => {
@@ -95,6 +116,9 @@ export default function App() {
   const handleOpenTool = (toolAction) => {
     console.log('Opening tool:', toolAction)
 
+    const toolId = toolIdForAction(toolAction)
+    if (toolId && !hasToolAccess(toolId)) return
+
     if (toolAction === 'certificate') {
       setFormType('certificate')
       setCurrentPage('form')
@@ -109,6 +133,8 @@ export default function App() {
       setMeterForForm(null)
     } else if (toolAction === 'vault') {
       setCurrentPage('vault')
+    } else if (toolAction === 'datalog-converter') {
+      setCurrentPage('datalog-converter')
     }
   }
 
@@ -134,6 +160,8 @@ export default function App() {
       ? { title: 'Available Tools', subtitle: 'Browse and launch calibration tools' }
       : currentPage === 'vault'
       ? { title: 'Certificate Repository', subtitle: 'Upload, search and manage certificates & tags' }
+      : currentPage === 'datalog-converter'
+      ? { title: 'Datalog to Excel Converter', subtitle: 'Convert flow or BTU meter text logs into formatted Excel reports' }
       : currentPage === 'form'
       ? FORM_TITLES[formType] || { title: 'Generate', subtitle: '' }
       : { title: '', subtitle: '' }
@@ -151,6 +179,7 @@ export default function App() {
         userName={displayName(user)}
         userEmail={user?.email}
         onLogout={signOut}
+        showVault={hasToolAccess('certificate-vault')}
       />
 
       <div className={`app-content ${sidebarCollapsed ? 'app-content--collapsed' : ''}`}>
@@ -181,6 +210,13 @@ export default function App() {
           {currentPage === 'vault' && (
             <div className="form-page-container page-transition" key="vault">
               <CertificateVault onBack={() => setCurrentPage('tools')} />
+            </div>
+          )}
+
+          {/* Datalog to Excel Converter Page */}
+          {currentPage === 'datalog-converter' && (
+            <div className="form-page-container page-transition" key="datalog-converter">
+              <DataLogConverter onBack={() => setCurrentPage('tools')} />
             </div>
           )}
 

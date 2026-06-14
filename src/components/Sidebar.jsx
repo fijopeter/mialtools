@@ -46,9 +46,10 @@ const NAV_ITEMS = [
   { id: 'vault', label: 'Repository', icon: IconArchive },
 ]
 
-export default function Sidebar({ currentPage, onNavigate, collapsed, onToggleCollapse, userName, userEmail, onLogout }) {
-  const activeId = currentPage === 'form' ? 'tools' : currentPage
-  const activeIndex = NAV_ITEMS.findIndex((item) => item.id === activeId)
+export default function Sidebar({ currentPage, onNavigate, collapsed, onToggleCollapse, userName, userEmail, onLogout, showVault = true }) {
+  const navItems = NAV_ITEMS.filter((item) => item.id !== 'vault' || showVault)
+  const activeId = (currentPage === 'form' || currentPage === 'datalog-converter') ? 'tools' : currentPage
+  const activeIndex = navItems.findIndex((item) => item.id === activeId)
   const [accountOpen, setAccountOpen] = useState(false)
   const accountRef = useRef(null)
 
@@ -94,7 +95,7 @@ export default function Sidebar({ currentPage, onNavigate, collapsed, onToggleCo
             style={{ transform: `translateY(${activeIndex * ITEM_HEIGHT}px)` }}
           />
         )}
-        {NAV_ITEMS.map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon
           return (
             <button

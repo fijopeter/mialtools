@@ -5,8 +5,13 @@ import { meterCatalog, flattenMeterCatalog } from '../config/meterCatalog'
 import { mergeMeterAndTagSchemas, buildInitialFormData, TAG_SECTION_TITLE } from '../utils/mergeSchemas'
 import { drawCertificate } from '../utils/drawCertificate'
 import { drawTag } from '../utils/drawMeterDocuments'
-import { getSignatureImageForName } from '../utils/signatures'
+import { getSignatureImageForName, OTHER_CALIBRATED_BY, CALIBRATED_BY_OPTIONS } from '../utils/signatures'
+import { validateSignatureImageFile, signatureImageRulesHintText } from '../utils/validateSignatureImage'
+import { useAuth, displayName } from '../contexts/AuthContext'
+import { supabase, isSupabaseConfigured, CERTIFICATES_BUCKET } from '../utils/supabaseClient'
+import { fetchFieldSuggestions, recordFieldSuggestions, MAX_SUGGESTIONS_PER_FIELD } from '../utils/fieldSuggestions'
 import ComboInput from './ComboInput'
+import SuggestionInput from './SuggestionInput'
 import TiltCard from './TiltCard'
 import './CertificateForm.css'
 import tagSchemaList from '..//tagSchemasOnly/tagschema/tag.json'
@@ -41,6 +46,9 @@ const loadImage = (src) =>
     img.onerror = () => resolve(null);
     img.src = src;
   });
+
+const sanitizeFileName = (name) =>
+  name.replace(/[\\/:*?"<>|]/g, '-').replace(/\s+/g, ' ').trim()
 
 const IconCheck = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
@@ -84,6 +92,9 @@ const IconHome = () => (
 )
 
 export default function CertificateForm({ meter, formType = 'both', onBack, onSubmit }) {
+  const { user } = useAuth()
+  const uploaderName = displayName(user)
+
   const [savedFormState] = useState(() => {
     const saved = readSavedFormState()
     return saved && saved.formType === formType ? saved : null
@@ -106,8 +117,31 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
   const [isRenderingTag, setIsRenderingTag] = useState(false)
   const [isDownloadingCertificate, setIsDownloadingCertificate] = useState(false)
   const [isDownloadingTag, setIsDownloadingTag] = useState(false)
+  const [certificateUploadState, setCertificateUploadState] = useState({ action: null, status: 'idle', message: '' })
+  const [tagUploadState, setTagUploadState] = useState({ action: null, status: 'idle', message: '' })
+  const [useCustomSignature, setUseCustomSignature] = useState(false)
+  const [signatureImageDataUrl, setSignatureImageDataUrl] = useState(null)
+  const [signatureImageError, setSignatureImageError] = useState(null)
+  const [fieldSuggestions, setFieldSuggestions] = useState({})
   const certificateCanvasRef = useRef(null)
   const tagCanvasRef = useRef(null)
+
+  // Load previously entered values once, used for the double-space suggestion dropdown
+  useEffect(() => {
+    fetchFieldSuggestions().then(setFieldSuggestions)
+  }, [])
+
+  const mergeFieldSuggestions = (prevMap, rows) => {
+    const next = { ...prevMap }
+    rows.forEach(({ field_key, value }) => {
+      const list = next[field_key] ? [...next[field_key]] : []
+      const existingIndex = list.indexOf(value)
+      if (existingIndex !== -1) list.splice(existingIndex, 1)
+      list.unshift(value)
+      next[field_key] = list.slice(0, MAX_SUGGESTIONS_PER_FIELD)
+    })
+    return next
+  }
 
   // Get flattened meter catalog for search
   const allMeters = useMemo(() => flattenMeterCatalog(), [])
@@ -161,6 +195,9 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     prevFieldMetaRef.current = fieldMeta
     setFormData(buildInitialFormData(fieldMeta))
     setCurrentSection(0)
+    setUseCustomSignature(false)
+    setSignatureImageDataUrl(null)
+    setSignatureImageError(null)
   }, [fieldMeta])
 
   // Persist form progress so a background-tab reload doesn't wipe out what the user typed
@@ -185,6 +222,9 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     setSelectedMeter(selectedMeterOption)
     setFormData(buildInitialFormData(selectedMeterOption.meterSchema?.fieldMeta || {}))
     setCurrentSection(0)
+    setUseCustomSignature(false)
+    setSignatureImageDataUrl(null)
+    setSignatureImageError(null)
   }
 
   const handleInputChange = (e) => {
@@ -193,6 +233,41 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
       ...prev,
       [name]: value
     }))
+  }
+
+  const handleDropdownFieldChange = (fieldKey, nextValue) => {
+    if (fieldKey === 'calibratedBy') {
+      if (nextValue === OTHER_CALIBRATED_BY) {
+        setUseCustomSignature(true)
+        setSignatureImageError(null)
+        setFormData((prev) => ({ ...prev, calibratedBy: '' }))
+        return
+      }
+      if (CALIBRATED_BY_OPTIONS.includes(nextValue)) {
+        setUseCustomSignature(false)
+        setSignatureImageDataUrl(null)
+        setSignatureImageError(null)
+      }
+    }
+    setFormData((prev) => ({ ...prev, [fieldKey]: nextValue }))
+  }
+
+  const handleSignatureFileChange = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) {
+      setSignatureImageDataUrl(null)
+      setSignatureImageError(null)
+      return
+    }
+    const result = await validateSignatureImageFile(file)
+    if (!result.ok) {
+      setSignatureImageError(result.error)
+      setSignatureImageDataUrl(null)
+      return
+    }
+    setSignatureImageError(null)
+    setSignatureImageDataUrl(result.dataUrl)
   }
 
   const renderFieldInput = (fieldKey) => {
@@ -222,27 +297,26 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
           placeholder={currentFieldMeta.placeholder || ''}
           disabled={isDisabled}
           options={dropdownOptions}
-          onChange={(nextValue) => setFormData((prev) => ({ ...prev, [fieldKey]: nextValue }))}
+          onChange={(nextValue) => handleDropdownFieldChange(fieldKey, nextValue)}
         />
       );
     }
 
     return (
-      <input
-        type="text"
+      <SuggestionInput
         name={fieldKey}
         value={formData[fieldKey]}
-        onChange={handleInputChange}
+        onChange={(nextValue) => setFormData((prev) => ({ ...prev, [fieldKey]: nextValue }))}
         placeholder={currentFieldMeta.placeholder || ''}
         disabled={isDisabled}
-        className="form-input"
+        suggestions={fieldSuggestions[fieldKey] || []}
       />
     );
   };
 
   const signatureImageUrl = useMemo(
-    () => getSignatureImageForName(formData.calibratedBy),
-    [formData.calibratedBy],
+    () => (useCustomSignature ? signatureImageDataUrl : getSignatureImageForName(formData.calibratedBy)),
+    [useCustomSignature, signatureImageDataUrl, formData.calibratedBy],
   )
 
   useEffect(() => {
@@ -284,20 +358,74 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     }
   }, [showTagPreview, tagData, selectedMeter])
 
+  const buildCertificatePdf = () => {
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    pdf.addImage(
+      certificateCanvasRef.current.toDataURL('image/png'),
+      'PNG',
+      0,
+      0,
+      297,
+      210,
+    );
+    const fileName = sanitizeFileName(`${certificateData.serialNo || 'unnamed'}-certificate.pdf`)
+    return { pdf, fileName }
+  }
+
+  const buildTagPdf = () => {
+    const canvas = tagCanvasRef.current
+    const hasOutputsBox = !!selectedMeter?.tagDrawConfig?.outputsBox
+    const pdfHeight = 90
+    const pdfWidth = hasOutputsBox ? pdfHeight * (canvas.width / canvas.height) : 150
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [pdfWidth, pdfHeight] });
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
+    const fileName = sanitizeFileName(`${tagData.serialNo || 'file'}-tag.pdf`)
+    return { pdf, fileName }
+  }
+
+  const uploadPdfToRepository = async (pdf, fileName) => {
+    if (!isSupabaseConfigured) {
+      return { error: 'Supabase is not configured, so the file could not be uploaded.' }
+    }
+
+    const blob = pdf.output('blob')
+    const baseName = fileName.replace(/\.pdf$/i, '')
+    let finalName = fileName
+    let attempt = 0
+
+    while (true) {
+      const { error } = await supabase.storage.from(CERTIFICATES_BUCKET).upload(finalName, blob, {
+        contentType: 'application/pdf',
+        upsert: false,
+      })
+
+      if (!error) break
+
+      if (attempt < 50 && /exist/i.test(error.message)) {
+        attempt += 1
+        finalName = sanitizeFileName(`${baseName} (${attempt}).pdf`)
+        continue
+      }
+
+      return { error: error.message || 'Upload failed. Please try again.' }
+    }
+
+    if (user) {
+      await supabase.from('certificate_uploads').upsert(
+        { file_name: finalName, uploaded_by: user.id, uploaded_by_name: uploaderName },
+        { onConflict: 'file_name' }
+      )
+    }
+
+    return { fileName: finalName }
+  }
+
   const downloadCertificatePdf = () => {
     if (!certificateCanvasRef.current || !certificateData) return;
     setIsDownloadingCertificate(true)
     setTimeout(() => {
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-      pdf.addImage(
-        certificateCanvasRef.current.toDataURL('image/png'),
-        'PNG',
-        0,
-        0,
-        297,
-        210,
-      );
-      pdf.save(`${certificateData.serialNo || 'unnamed'}-certificate.pdf`);
+      const { pdf, fileName } = buildCertificatePdf()
+      pdf.save(fileName);
       setIsDownloadingCertificate(false)
     }, 0)
   }
@@ -306,14 +434,43 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
     if (!tagCanvasRef.current || !tagData) return;
     setIsDownloadingTag(true)
     setTimeout(() => {
-      const canvas = tagCanvasRef.current
-      const hasOutputsBox = !!selectedMeter?.tagDrawConfig?.outputsBox
-      const pdfHeight = 90
-      const pdfWidth = hasOutputsBox ? pdfHeight * (canvas.width / canvas.height) : 150
-      const tagPdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [pdfWidth, pdfHeight] });
-      tagPdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdfWidth, pdfHeight);
-      tagPdf.save(`${tagData.serialNo || 'file'}-tag.pdf`);
+      const { pdf, fileName } = buildTagPdf()
+      pdf.save(fileName);
       setIsDownloadingTag(false)
+    }, 0)
+  }
+
+  const handleCertificateUploadAction = (action) => {
+    if (!certificateCanvasRef.current || !certificateData) return;
+    setCertificateUploadState({ action, status: 'working', message: '' })
+    setTimeout(async () => {
+      const { pdf, fileName } = buildCertificatePdf()
+      if (action === 'download-upload') {
+        pdf.save(fileName)
+      }
+      const { error, fileName: uploadedName } = await uploadPdfToRepository(pdf, fileName)
+      setCertificateUploadState({
+        action,
+        status: error ? 'error' : 'success',
+        message: error || `"${uploadedName}" was uploaded to the Certificate Repository.`,
+      })
+    }, 0)
+  }
+
+  const handleTagUploadAction = (action) => {
+    if (!tagCanvasRef.current || !tagData) return;
+    setTagUploadState({ action, status: 'working', message: '' })
+    setTimeout(async () => {
+      const { pdf, fileName } = buildTagPdf()
+      if (action === 'download-upload') {
+        pdf.save(fileName)
+      }
+      const { error, fileName: uploadedName } = await uploadPdfToRepository(pdf, fileName)
+      setTagUploadState({
+        action,
+        status: error ? 'error' : 'success',
+        message: error || `"${uploadedName}" was uploaded to the Certificate Repository.`,
+      })
     }, 0)
   }
 
@@ -341,12 +498,20 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
 
   const handlePreviewCertificate = () => {
     setCertificateData({ ...formData, signatureImageDataUrl: signatureImageUrl })
+    setCertificateUploadState({ action: null, status: 'idle', message: '' })
     setShowCertificatePreview(true)
+    recordFieldSuggestions(fieldMeta, formData).then((rows) => {
+      if (rows.length) setFieldSuggestions((prev) => mergeFieldSuggestions(prev, rows))
+    })
   }
 
   const handlePreviewTag = () => {
     setTagData(formData)
+    setTagUploadState({ action: null, status: 'idle', message: '' })
     setShowTagPreview(true)
+    recordFieldSuggestions(fieldMeta, formData).then((rows) => {
+      if (rows.length) setFieldSuggestions((prev) => mergeFieldSuggestions(prev, rows))
+    })
   }
 
   const handleSubmit = (e) => {
@@ -467,6 +632,26 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
                     </label>
                   ))}
                 </div>
+
+                {useCustomSignature && sections[currentSection].fields.includes('calibratedBy') && (
+                  <div className="field-group signature-upload-group">
+                    <span>Signature image (for certificate)</span>
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/jpg"
+                      onChange={handleSignatureFileChange}
+                    />
+                    <p className="signature-upload-hint">{signatureImageRulesHintText()}</p>
+                    {signatureImageError && (
+                      <p className="field-error" role="alert">
+                        {signatureImageError}
+                      </p>
+                    )}
+                    {signatureImageDataUrl && !signatureImageError && (
+                      <p className="signature-upload-ok">Signature image uploaded successfully</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -536,7 +721,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
               <button
                 className="btn btn-success"
                 onClick={downloadCertificatePdf}
-                disabled={isDownloadingCertificate || isRenderingCertificate}
+                disabled={isDownloadingCertificate || isRenderingCertificate || certificateUploadState.status === 'working'}
               >
                 {isDownloadingCertificate ? (
                   <>
@@ -547,10 +732,43 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
                   'Download PDF'
                 )}
               </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleCertificateUploadAction('download-upload')}
+                disabled={isDownloadingCertificate || isRenderingCertificate || certificateUploadState.status === 'working'}
+              >
+                {certificateUploadState.status === 'working' && certificateUploadState.action === 'download-upload' ? (
+                  <>
+                    <span className="spinner"></span>
+                    Uploading...
+                  </>
+                ) : (
+                  'Download & Upload'
+                )}
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleCertificateUploadAction('upload')}
+                disabled={isDownloadingCertificate || isRenderingCertificate || certificateUploadState.status === 'working'}
+              >
+                {certificateUploadState.status === 'working' && certificateUploadState.action === 'upload' ? (
+                  <>
+                    <span className="spinner"></span>
+                    Uploading...
+                  </>
+                ) : (
+                  'Upload'
+                )}
+              </button>
               <button className="btn btn-secondary" onClick={() => setShowCertificatePreview(false)}>
                 Close
               </button>
             </div>
+            {certificateUploadState.message && (
+              <p className={`upload-status-banner ${certificateUploadState.status === 'error' ? 'upload-status-banner--error' : 'upload-status-banner--success'}`}>
+                {certificateUploadState.message}
+              </p>
+            )}
           </div>
         </div>,
         document.body
@@ -577,7 +795,7 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
               <button
                 className="btn btn-success"
                 onClick={downloadTagPdf}
-                disabled={isDownloadingTag || isRenderingTag}
+                disabled={isDownloadingTag || isRenderingTag || tagUploadState.status === 'working'}
               >
                 {isDownloadingTag ? (
                   <>
@@ -588,10 +806,43 @@ export default function CertificateForm({ meter, formType = 'both', onBack, onSu
                   'Download Tag'
                 )}
               </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleTagUploadAction('download-upload')}
+                disabled={isDownloadingTag || isRenderingTag || tagUploadState.status === 'working'}
+              >
+                {tagUploadState.status === 'working' && tagUploadState.action === 'download-upload' ? (
+                  <>
+                    <span className="spinner"></span>
+                    Uploading...
+                  </>
+                ) : (
+                  'Download & Upload'
+                )}
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => handleTagUploadAction('upload')}
+                disabled={isDownloadingTag || isRenderingTag || tagUploadState.status === 'working'}
+              >
+                {tagUploadState.status === 'working' && tagUploadState.action === 'upload' ? (
+                  <>
+                    <span className="spinner"></span>
+                    Uploading...
+                  </>
+                ) : (
+                  'Upload'
+                )}
+              </button>
               <button className="btn btn-secondary" onClick={() => setShowTagPreview(false)}>
                 Close
               </button>
             </div>
+            {tagUploadState.message && (
+              <p className={`upload-status-banner ${tagUploadState.status === 'error' ? 'upload-status-banner--error' : 'upload-status-banner--success'}`}>
+                {tagUploadState.message}
+              </p>
+            )}
           </div>
         </div>,
         document.body

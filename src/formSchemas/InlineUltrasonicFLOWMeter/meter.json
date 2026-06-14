@@ -74,7 +74,7 @@
       "defaultValue": "4–20 mA"
     },
     "customerKFactor": {
-      "label": "Customer K Factor",
+      "label": "K Factor",
       "placeholder": "e.g., 1.081"
     },
     "model": {

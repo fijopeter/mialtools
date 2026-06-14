@@ -87,7 +87,7 @@
       "placeholder": "e.g., 0 – 10 L/s"
     },
     "customerKFactor": {
-      "label": "Customer K Factor",
+      "label": "K Factor",
       "placeholder": "e.g., 1.119"
     },
     "model": {

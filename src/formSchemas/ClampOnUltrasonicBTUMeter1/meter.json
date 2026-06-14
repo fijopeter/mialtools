@@ -92,7 +92,7 @@
       "placeholder": "e.g., 57.4 mm"
     },
     "customerKFactor": {
-      "label": "Customer K Factor",
+      "label": "K Factor",
       "placeholder": "e.g., 1.022"
     },
     "analogRange": {

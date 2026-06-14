@@ -55,7 +55,7 @@ export const meterCatalog = [
     label: 'Level Meter',
     description: 'Ultrasonic and radar level measurement instruments',
     options: [
-      { id: 'UltraSonicLevelMeter', code: 'UltraSonicLevelMeter', label: 'Ultra Sonic Level Meter', meterSchema: UltraSonicLevelMeter, tagSchema: A1Tag, certificateConfig: UltraSonicLevelMeterCertificate, tagDrawConfig: A1TagDraw.tagDraw, description: 'Unveiling the MULR Ultrasonic Level Sensors: your ultimate choice for accurate liquid level detection without direct contact.' },
+      { id: 'UltraSonicLevelMeter', code: 'UltraSonicLevelMeter', label: 'Ultrasonic Level Meter', meterSchema: UltraSonicLevelMeter, tagSchema: A1Tag, certificateConfig: UltraSonicLevelMeterCertificate, tagDrawConfig: A1TagDraw.tagDraw, description: 'Unveiling the MULR Ultrasonic Level Sensors: your ultimate choice for accurate liquid level detection without direct contact.' },
       { id: 'RadarLevelMeter', code: 'RadarLevelMeter', label: 'Radar Level Meter', meterSchema: A2Meter, tagSchema: A2Tag, certificateConfig: A2Certificate, tagDrawConfig: A2TagDraw.tagDraw, description: 'Meet our MRL radar level technology—designed to deliver fast, accurate, and reliable level measurement.' },
     ],
   },

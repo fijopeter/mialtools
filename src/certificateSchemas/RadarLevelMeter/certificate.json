@@ -19,6 +19,7 @@
     { "field": "setRange" },
     { "field": "blindSpot" },
     { "field": "displayType" },
+    { "field": "cableLength" },
     { "field": "analogOutput" }
   ],
   "columnThree": [
