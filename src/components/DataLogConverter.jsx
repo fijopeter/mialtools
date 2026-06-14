@@ -320,7 +320,8 @@ export default function DataLogConverter({ onBack }) {
             </div>
             <p className="datalog-progress__label">
               <span className="spinner" />
-              Converting… {progress}%{rowCount > 0 ? ` · ${rowCount.toLocaleString()} records processed` : ''}
+              {progress >= 95 ? 'Finalizing Excel file…' : `Converting… ${progress}%`}
+              {rowCount > 0 ? ` · ${rowCount.toLocaleString()} records processed` : ''}
             </p>
           </div>
         )}

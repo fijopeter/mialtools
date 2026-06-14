@@ -255,10 +255,10 @@ where email = 'person@example.com';
 update public.profiles set allowed_tools = null where email = 'person@example.com';
 ```
 
-Restricted tools are hidden from the Tools page and the sidebar, and direct
-navigation to them is blocked — so this is just a `profiles` table edit, no
-app changes required. The user sees the change next time they sign in or
-refresh the page.
+Restricted tools still appear on the Tools page, but shown locked with a
+"Not authorized" message and can't be opened; direct navigation to them is
+also blocked — so this is just a `profiles` table edit, no app changes
+required. The user sees the change next time they sign in or refresh the page.
 
 ## 8. Enable field-value suggestions (autocomplete)
 

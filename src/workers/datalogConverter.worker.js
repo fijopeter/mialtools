@@ -3,7 +3,11 @@ import { METER_CONFIGS } from './datalogFields.js'
 
 const HEADER_FILL = 'FF2E348E'
 const SUBHEADER_FILL = 'FF4F55A8'
+const TITLE_FILL = 'FF06B6D4'
 const DECIMAL_FORMAT = '0.000000'
+const HEADER_BLOCK_ROWS = 5
+const COMPANY_LOGO_URL = new URL('../images/fullLogo.jpg', import.meta.url).href
+const COMPANY_LINK = 'https://www.mialinstruments.com'
 
 function parseValueUnit(raw) {
   const tokens = raw.trim().split(/\s+/)
@@ -32,21 +36,49 @@ self.onmessage = async (event) => {
     })
     sheet.columns = columns
 
-    sheet.getCell(1, 1).value = 'Date'
-    sheet.getCell(1, 2).value = 'Time'
-    sheet.mergeCells(1, 1, 2, 1)
-    sheet.mergeCells(1, 2, 2, 2)
+    // Company logo + link in the top-left corner
+    try {
+      const logoBuffer = await (await fetch(COMPANY_LOGO_URL)).arrayBuffer()
+      const logoImageId = workbook.addImage({ buffer: logoBuffer, extension: 'jpeg' })
+      sheet.addImage(logoImageId, { tl: { col: 0, row: 0 }, ext: { width: 180, height: 75 } })
+    } catch {
+      // Logo is decorative - continue without it if it can't be loaded
+    }
+
+    sheet.mergeCells(HEADER_BLOCK_ROWS, 1, HEADER_BLOCK_ROWS, 2)
+    const linkCell = sheet.getCell(HEADER_BLOCK_ROWS, 1)
+    linkCell.value = { text: 'www.mialinstruments.com', hyperlink: COMPANY_LINK }
+    linkCell.font = { color: { argb: 'FF0563C1' }, underline: true, size: 10 }
+    linkCell.alignment = { vertical: 'middle', horizontal: 'left' }
+
+    // Row HEADER_BLOCK_ROWS + 1 is left blank as a gap before the table
+    const TITLE_ROW = HEADER_BLOCK_ROWS + 2
+    const TABLE_HEADER_ROW_1 = HEADER_BLOCK_ROWS + 3
+    const TABLE_HEADER_ROW_2 = HEADER_BLOCK_ROWS + 4
+
+    sheet.mergeCells(TITLE_ROW, 1, TITLE_ROW, columns.length)
+    const titleCell = sheet.getCell(TITLE_ROW, 1)
+    titleCell.value = `Data Analysis - ${config.label}`
+    titleCell.font = { bold: true, size: 14, color: { argb: 'FFFFFFFF' } }
+    titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: TITLE_FILL } }
+    titleCell.alignment = { vertical: 'middle', horizontal: 'center' }
+    sheet.getRow(TITLE_ROW).height = 26
+
+    sheet.getCell(TABLE_HEADER_ROW_1, 1).value = 'Date'
+    sheet.getCell(TABLE_HEADER_ROW_1, 2).value = 'Time'
+    sheet.mergeCells(TABLE_HEADER_ROW_1, 1, TABLE_HEADER_ROW_2, 1)
+    sheet.mergeCells(TABLE_HEADER_ROW_1, 2, TABLE_HEADER_ROW_2, 2)
 
     config.fields.forEach((field, i) => {
       const startCol = 3 + i * 2
-      sheet.getCell(1, startCol).value = field.label
-      sheet.mergeCells(1, startCol, 1, startCol + 1)
-      sheet.getCell(2, startCol).value = 'Value'
-      sheet.getCell(2, startCol + 1).value = 'Unit'
+      sheet.getCell(TABLE_HEADER_ROW_1, startCol).value = field.label
+      sheet.mergeCells(TABLE_HEADER_ROW_1, startCol, TABLE_HEADER_ROW_1, startCol + 1)
+      sheet.getCell(TABLE_HEADER_ROW_2, startCol).value = 'Value'
+      sheet.getCell(TABLE_HEADER_ROW_2, startCol + 1).value = 'Unit'
     })
 
-    const headerRow1 = sheet.getRow(1)
-    const headerRow2 = sheet.getRow(2)
+    const headerRow1 = sheet.getRow(TABLE_HEADER_ROW_1)
+    const headerRow2 = sheet.getRow(TABLE_HEADER_ROW_2)
     headerRow1.height = 22
     headerRow2.height = 22
     headerRow1.eachCell({ includeEmpty: true }, (cell) => {
@@ -61,7 +93,7 @@ self.onmessage = async (event) => {
       cell.alignment = { vertical: 'middle', horizontal: 'center' }
     })
 
-    sheet.views = [{ state: 'frozen', xSplit: 2, ySplit: 2 }]
+    sheet.views = [{ state: 'frozen', xSplit: 2, ySplit: TABLE_HEADER_ROW_2 }]
     const valueColumnWidths = {}
     config.fields.forEach((field) => {
       const key = `${field.name}Value`

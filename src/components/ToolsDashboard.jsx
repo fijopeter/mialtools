@@ -73,7 +73,10 @@ const TOOL_ICONS = {
 
 export default function ToolsDashboard({ onOpenTool, searchQuery = '' }) {
   const { hasToolAccess } = useAuth()
-  const tools = toolsCatalog.filter(t => hasToolAccess(t.id))
+  const tools = toolsCatalog.map(t => {
+    const accessDenied = !hasToolAccess(t.id)
+    return { ...t, accessDenied, locked: t.locked || accessDenied }
+  })
 
   const categories = ['All', ...new Set(tools.map(t => t.category))]
   const [selectedCategory, setSelectedCategory] = useState(null)
@@ -154,8 +157,8 @@ export default function ToolsDashboard({ onOpenTool, searchQuery = '' }) {
                   <div className="tool-icon">
                     <Icon />
                   </div>
-                  <div className={`status-badge status-${tool.status}`}>
-                    {tool.status === 'active' ? 'Active' : 'Locked'}
+                  <div className={`status-badge ${tool.locked ? 'status-locked' : 'status-active'}`}>
+                    {tool.accessDenied ? 'Restricted' : tool.locked ? 'Locked' : 'Active'}
                   </div>
                 </div>
 
@@ -192,7 +195,9 @@ export default function ToolsDashboard({ onOpenTool, searchQuery = '' }) {
                 {tool.locked && (
                   <div className="tool-unlock-info">
                     <p className="unlock-message">
-                      {tool.unlockMessage || `Unlocks on ${new Date(tool.unlocksAt).toLocaleDateString()}`}
+                      {tool.accessDenied
+                        ? 'Not authorized — ask an administrator to grant access to this tool'
+                        : (tool.unlockMessage || `Unlocks on ${new Date(tool.unlocksAt).toLocaleDateString()}`)}
                     </p>
                   </div>
                 )}

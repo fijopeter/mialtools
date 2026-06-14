@@ -25,6 +25,14 @@ const IconLock = () => (
   </svg>
 )
 
+const getAuthErrorMessage = (error) => {
+  const message = error?.message || ''
+  if (error?.code === 'over_email_send_rate_limit' || /rate limit/i.test(message)) {
+    return 'Too many emails sent recently. Please wait a few minutes and try again.'
+  }
+  return message
+}
+
 export default function AuthPage() {
   const { isConfigured, signIn, signUp } = useAuth()
   const [mode, setMode] = useState('signin') // 'signin' | 'signup'
@@ -57,11 +65,11 @@ export default function AuthPage() {
     setSubmitting(true)
     if (mode === 'signin') {
       const { error: signInError } = await signIn({ email, password })
-      if (signInError) setError(signInError.message)
+      if (signInError) setError(getAuthErrorMessage(signInError))
     } else {
       const { error: signUpError, needsEmailConfirmation } = await signUp({ fullName, email, password })
       if (signUpError) {
-        setError(signUpError.message)
+        setError(getAuthErrorMessage(signUpError))
       } else if (needsEmailConfirmation) {
         setInfo('Account created! Check your email to confirm your account, then sign in.')
         setMode('signin')
